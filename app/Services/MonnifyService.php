@@ -90,6 +90,28 @@ class MonnifyService
         return $result ?? null;
     }
 
+    public function verifyBankAccount($accountNumber, $bankCode)
+    {
+        $accessToken = $this->authenticate();
+        if (!$accessToken) return null;
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_URL, "$this->baseUrl/api/v1/disbursements/account/validate?accountNumber=$accountNumber&bankCode=$bankCode");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER,[
+            "Authorization: Bearer $accessToken",
+            "Content-Type: application/json",
+        ],);
+
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $result = json_decode($response, true);
+
+        return $result ?? null;
+    }
+
     public function disburseToClient($user, $amount, $narration = 'Chamber withdrawal')
     {
         $accessToken = $this->authenticate();

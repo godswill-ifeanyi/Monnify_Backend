@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateUserRequest extends FormRequest
+class VerifyBankAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,8 @@ class CreateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'chamberName' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'nin' => 'required|integer'
+            'accountNumber' => 'required|string',
+            'bankCode' => 'required|string',
         ];
     }
 
@@ -37,27 +35,16 @@ class CreateUserRequest extends FormRequest
     public function bodyParameters(): array
     {
         return [
-            'name' => [
+            'accountNumber' => [
                 'type' => 'string',
                 'required' => true,
-                'example' => 'John Doe'
+                'example' => '3434343434'
             ],
-            'chamberName' => [
+            'bankCode' => [
                 'type' => 'string',
                 'required' => true,
-                'example' => 'John Doe & Sons Chambers'
-            ],
-            'email' => [
-                'type' => 'string',
-                'required' => true,
-                'format' => 'email',
-                'example' => 'john.doe@example.com'
-            ],
-            'nin' => [
-                'type' => 'integer',
-                'required' => true,
-                'example' => '5767676767'
-            ],
+                'example' => '035'
+            ]
         ];
     }
 }
