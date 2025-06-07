@@ -15,6 +15,29 @@ class UserController extends Controller
 {
     use ApiResponseTrait;
 
+    /**
+    *   Create a reserved bank account.
+    *
+    
+    * @response 201 {
+    *       "status": "success",
+    *       "message": "Reserved Account Created Successfully",
+    *       "data": {
+    *           "name": "John Doe",
+    *           "chamberName": "John Doe & Sons Chambers",
+    *           "email": "john.doe@example.com",
+    *           "nin": 5767676767,
+    *           "accountRef": "cliApp684404f8964ec",
+    *           "bankDetails": {
+    *               "accountNumber": 3318057324,
+    *               "accountName": "JOHN DOE & SONS CHAMBERS",
+    *               "bankName": "Wema bank"
+    *           }
+    *       }
+ * }
+
+    */
+
     public function create(CreateUserRequest $request) {
         $data = $request->validated();
 
@@ -27,6 +50,7 @@ class UserController extends Controller
         $user->save();
 
         $monnify = new MonnifyService();
+        // Handle for when null
         $account = $monnify->createReservedAccount($user);
 
         return $this->success(new UserResource($user), 'Reserved Account Created Successfully', 201);

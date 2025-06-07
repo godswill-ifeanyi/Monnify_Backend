@@ -12,12 +12,29 @@ class VirtualAccountController extends Controller
 {
     use ApiResponseTrait;
 
+/**
+*   Verify any bank account.
+*
+*
+    * @response 200 {
+*        "status": "success",
+*        "message": "Account Details Valid",
+*        "data": {
+*           "accountName": "IFEANYI GODSWILL OKPANKU"
+*       }
+ * }
+
+
+*   
+*/
+
     public function verify(VerifyBankAccountRequest $request) {
         $request->validated($request->all());
 
         $monnify = new MonnifyService();
         $response = $monnify->verifyBankAccount($request->accountNumber, $request->bankCode);
 
+        // Handle for when null
         if ($response["requestSuccessful"] == true) {
             $accountName = $response["responseBody"]["accountName"];
 
