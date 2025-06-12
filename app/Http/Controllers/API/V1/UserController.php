@@ -50,7 +50,6 @@ class UserController extends Controller
         $user->save();
 
         $monnify = new MonnifyService();
-        // Handle for when null
         $account = $monnify->createReservedAccount($user);
 
         return $this->success(new UserResource($user), 'Reserved Account Created Successfully', 201);

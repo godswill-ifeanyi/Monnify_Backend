@@ -22,8 +22,8 @@ class VerifyBankAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'accountNumber' => 'required|string',
-            'bankCode' => 'required|string',
+            'accountNumber' => 'required|numeric',
+            'bankCode' => 'required|numeric',
         ];
     }
 
@@ -36,12 +36,12 @@ class VerifyBankAccountRequest extends FormRequest
     {
         return [
             'accountNumber' => [
-                'type' => 'string',
+                'type' => 'numeric',
                 'required' => true,
                 'example' => '3434343434'
             ],
             'bankCode' => [
-                'type' => 'string',
+                'type' => 'numeric',
                 'required' => true,
                 'example' => '035'
             ]

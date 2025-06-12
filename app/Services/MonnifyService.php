@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Transaction;
+use App\Models\DisburseDetail;
 use App\Models\VirtualAccount;
 use Illuminate\Support\Facades\Log;
 
@@ -112,31 +114,33 @@ class MonnifyService
         return $result ?? null;
     }
 
-    public function disburseToClient($user, $amount, $narration = 'Chamber withdrawal')
+    public function disburseToClient($user, $destination, $amount, $narration = 'Chamber withdrawal')
     {
         $accessToken = $this->authenticate();
         if (!$accessToken) return null;
 
-        // Optional: Check balance first
-        $trust = TrustAccount::where('client_id', $user->id)->first();
-        if (!$trust || $trust->balance < $amount) {
-            return ['error' => 'Insufficient trust account balance.'];
+        $account = VirtualAccount::where('user_id', $user->id)->first();
+        if (!$account || $account->balance < $amount) {
+            $result = "insufficient balance";
+
+            return $result;
         }
 
-        $reference = 'TRF-' . now()->timestamp;
+        $reference = $user->account_ref . now()->timestamp;
 
         $payload = [
             "amount" => $amount,
             "reference" => $reference,
             "narration" => $narration,
-            "bankCode" => $user->bank_code, // Must be provided
-            "accountNumber" => $user->account_number,
-            "currency" => "NGN"
+            "destinationBankCode" => $destination[0],
+            "destinationAccountNumber" => $destination[1],
+            "currency" => "NGN",
+            "sourceAccountNumber" => $user->virtualAccount->account_number
         ];
 
         $curl = curl_init();
         curl_setopt_array($curl, [
-            CURLOPT_URL => "$this->baseUrl/disbursements/single",
+            CURLOPT_URL => "$this->baseUrl/api/v2/disbursements/single",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($payload),
@@ -151,12 +155,27 @@ class MonnifyService
 
         $result = json_decode($response, true);
 
-        // If successful, deduct balance and optionally log transaction
-        if (($result['responseCode'] ?? '') === '0') {
-            $trust->decrement('balance', $amount);
-            // Optional: log transaction here
+        if ($result['requestSuccessful'] === true) {
+            $account->decrement('balance', $amount);
+
+            $transaction = new Transaction;
+            $transaction->user_id = $user_id;
+            $transaction->virtual_account_id = $account_id;
+            $transaction->type = "debit";
+            $transaction->amount = $amount;
+            $transaction->reference = $reference;
+            $transaction->narration = $narration;
+            $transaction->save();
+
+            $disburse_detail = new DisburseDetail;
+            $disburse_detail->transaction_id = $transaction->id;
+            $disburse_detail->total_fee = $result['totalFee'];
+            $disburse_detail->destionation_bank_name = $result['destionationBankName'];
+            $disburse_detail->destionation_account_number = $result['destionationAccountNumber'];
+            $disburse_detail->destionation_account_name = $result['destionationAccountName'];
+            $disburse_detail->save();
         }
 
-        return $result;
+        return $result ?? null;
     }
 }

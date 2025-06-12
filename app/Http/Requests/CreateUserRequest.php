@@ -25,7 +25,7 @@ class CreateUserRequest extends FormRequest
             'name' => 'required|string',
             'chamberName' => 'required|string',
             'email' => 'required|email|unique:users',
-            'nin' => 'required|integer'
+            'nin' => 'required|numeric'
         ];
     }
 
@@ -54,7 +54,7 @@ class CreateUserRequest extends FormRequest
                 'example' => 'john.doe@example.com'
             ],
             'nin' => [
-                'type' => 'integer',
+                'type' => 'numeric',
                 'required' => true,
                 'example' => '5767676767'
             ],
