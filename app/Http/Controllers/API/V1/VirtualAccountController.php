@@ -72,7 +72,10 @@ class VirtualAccountController extends Controller
             return $this->error('Insufficient Account Balance', 422);
         }
 
-        if ($disburse['requestSuccessful'] === true) {
+        if ($disburse['requestSuccessful'] === true) {  
+            $monnify = new MonnifyService();
+            $verify_disburse = $monnify->verifyDisbursement($disburse["reference"]);
+
             $response = [
                 "amount"=> $disburse["amount"],
                 "reference"=> $disburse["reference"],
@@ -81,6 +84,7 @@ class VirtualAccountController extends Controller
                 "destinationBankName"=> $disburse["destinationBankName"],
                 "destinationAccountNumber"=> $disburse["destinationAccountNumber"],
                 "destinationBankCode"=> $disburse["destinationBankCode"],
+                "isCompleted" => $verify_disburse["status"],
                 "dateCreated"=> $disburse["dateCreated"]
             ];
 

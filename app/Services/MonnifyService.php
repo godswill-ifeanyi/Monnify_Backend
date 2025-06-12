@@ -158,6 +158,8 @@ class MonnifyService
         if ($result['requestSuccessful'] === true) {
             $account->decrement('balance', $amount);
 
+            $verify_disburse = $this->verifyDisbursement($result["reference"]);
+
             $transaction = new Transaction;
             $transaction->user_id = $user_id;
             $transaction->virtual_account_id = $account_id;
@@ -165,7 +167,13 @@ class MonnifyService
             $transaction->amount = $amount;
             $transaction->reference = $reference;
             $transaction->narration = $narration;
+            $transaction->is_completed = $verify_disburse["status"];
             $transaction->save();
+
+            if ($transaction->is_completed != $verify_disburse["status"]) {
+                $transaction->is_completed = $verify_disburse["status"];
+                $transaction->update();
+            }
 
             $disburse_detail = new DisburseDetail;
             $disburse_detail->transaction_id = $transaction->id;
@@ -175,6 +183,23 @@ class MonnifyService
             $disburse_detail->destionation_account_name = $result['destionationAccountName'];
             $disburse_detail->save();
         }
+
+        return $result ?? null;
+    }
+
+    public function verifyDisbursement($reference) {
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_URL, "$this->baseUrl/api/v2/disbursements/single/summary?reference=$reference");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER,[
+            "Accept: application/json",
+            "Content-Type: application/json",
+        ],);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $result = json_decode($response, true);
 
         return $result ?? null;
     }

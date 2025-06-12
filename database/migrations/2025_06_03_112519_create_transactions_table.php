@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('amount', 15, 2);
             $table->string('reference')->nullable();
             $table->string('narration')->nullable();
+            $table->string('is_completed');
             $table->timestamps();
         });
     }
