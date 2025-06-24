@@ -54,14 +54,14 @@ class UserController extends Controller
 
         if ($account == null) {
             $user->delete();
-            
+
             return $this->error('Something Went Wrong',  403);
         }
         else {
             if ($account['requestSuccessful'] == false) {
                 $user->delete();
 
-                return $this->error($account['responseMessage'],  422);
+                return $this->error(ucwords($account['responseMessage']),  422);
             }
         }
 
