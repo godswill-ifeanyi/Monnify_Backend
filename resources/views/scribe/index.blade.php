@@ -75,7 +75,10 @@
                                 <a href="#endpoints-POSTapi-v1-create-account">Create a reserved bank account.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-v1-verify-account">
-                                <a href="#endpoints-POSTapi-v1-verify-account">Verify Any Bank Account.</a>
+                                <a href="#endpoints-POSTapi-v1-verify-account">Verify any bank account.</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-v1-disburse-funds">
+                                <a href="#endpoints-POSTapi-v1-disburse-funds">POST api/v1/disburse-funds</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -88,7 +91,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: June 7, 2025</li>
+        <li>Last updated: June 24, 2025</li>
     </ul>
 </div>
 
@@ -290,7 +293,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>nin</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
+<small>number</small>&nbsp;
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="nin"                data-endpoint="POSTapi-v1-create-account"
@@ -301,7 +304,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
-                    <h2 id="endpoints-POSTapi-v1-verify-account">Verify Any Bank Account.</h2>
+                    <h2 id="endpoints-POSTapi-v1-verify-account">Verify any bank account.</h2>
 
 <p>
 </p>
@@ -318,8 +321,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"accountNumber\": \"3434343434\",
-    \"bankCode\": \"035\"
+    \"accountNumber\": 3434343434,
+    \"bankCode\": 35
 }"
 </code></pre></div>
 
@@ -335,8 +338,8 @@ const headers = {
 };
 
 let body = {
-    "accountNumber": "3434343434",
-    "bankCode": "035"
+    "accountNumber": 3434343434,
+    "bankCode": 35
 };
 
 fetch(url, {
@@ -434,10 +437,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>accountNumber</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>number</small>&nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="accountNumber"                data-endpoint="POSTapi-v1-verify-account"
+                <input type="number" style="display: none"
+               step="any"               name="accountNumber"                data-endpoint="POSTapi-v1-verify-account"
                value="3434343434"
                data-component="body">
     <br>
@@ -445,14 +448,193 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>bankCode</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="bankCode"                data-endpoint="POSTapi-v1-verify-account"
+               value="35"
+               data-component="body">
+    <br>
+<p>Example: <code>35</code></p>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-POSTapi-v1-disburse-funds">POST api/v1/disburse-funds</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-disburse-funds">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/api/v1/disburse-funds" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"accountRef\": \"consequatur\",
+    \"amount\": \"2.77\",
+    \"destinationBankCode\": 11613.31890586,
+    \"destinationAccountNumber\": 11613.31890586
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/v1/disburse-funds"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "accountRef": "consequatur",
+    "amount": "2.77",
+    "destinationBankCode": 11613.31890586,
+    "destinationAccountNumber": 11613.31890586
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-disburse-funds">
+</span>
+<span id="execution-results-POSTapi-v1-disburse-funds" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-disburse-funds"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-disburse-funds"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-disburse-funds" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-disburse-funds">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-disburse-funds" data-method="POST"
+      data-path="api/v1/disburse-funds"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-disburse-funds', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-disburse-funds"
+                    onclick="tryItOut('POSTapi-v1-disburse-funds');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-disburse-funds"
+                    onclick="cancelTryOut('POSTapi-v1-disburse-funds');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-disburse-funds"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/disburse-funds</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-disburse-funds"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-disburse-funds"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>accountRef</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="bankCode"                data-endpoint="POSTapi-v1-verify-account"
-               value="035"
+                              name="accountRef"                data-endpoint="POSTapi-v1-disburse-funds"
+               value="consequatur"
                data-component="body">
     <br>
-<p>Example: <code>035</code></p>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>amount</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="amount"                data-endpoint="POSTapi-v1-disburse-funds"
+               value="2.77"
+               data-component="body">
+    <br>
+<p>Must match the regex /^\d+(.\d{1,2})?$/. Example: <code>2.77</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>narration</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="narration"                data-endpoint="POSTapi-v1-disburse-funds"
+               value=""
+               data-component="body">
+    <br>
+
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>destinationBankCode</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="destinationBankCode"                data-endpoint="POSTapi-v1-disburse-funds"
+               value="11613.31890586"
+               data-component="body">
+    <br>
+<p>Example: <code>11613.31890586</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>destinationAccountNumber</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="destinationAccountNumber"                data-endpoint="POSTapi-v1-disburse-funds"
+               value="11613.31890586"
+               data-component="body">
+    <br>
+<p>Example: <code>11613.31890586</code></p>
         </div>
         </form>
 

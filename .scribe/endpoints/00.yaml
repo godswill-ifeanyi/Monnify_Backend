@@ -56,8 +56,8 @@ endpoints:
         name: nin
         description: ''
         required: true
-        example: 5767676767
-        type: integer
+        example: 5767676767.0
+        type: number
         enumValues: []
         exampleWasSpecified: false
         nullable: false
@@ -66,7 +66,7 @@ endpoints:
       name: 'John Doe'
       chamberName: 'John Doe & Sons Chambers'
       email: john.doe@example.com
-      nin: 5767676767
+      nin: 5767676767.0
     fileParameters: []
     responses:
       -
@@ -106,7 +106,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Verify Any Bank Account.'
+      title: 'Verify any bank account.'
       description: ''
       authenticated: false
       custom: []
@@ -122,8 +122,8 @@ endpoints:
         name: accountNumber
         description: ''
         required: true
-        example: '3434343434'
-        type: string
+        example: 3434343434.0
+        type: number
         enumValues: []
         exampleWasSpecified: false
         nullable: false
@@ -132,15 +132,15 @@ endpoints:
         name: bankCode
         description: ''
         required: true
-        example: '035'
-        type: string
+        example: 35.0
+        type: number
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      accountNumber: '3434343434'
-      bankCode: '035'
+      accountNumber: 3434343434.0
+      bankCode: 35.0
     fileParameters: []
     responses:
       -
@@ -156,6 +156,90 @@ endpoints:
         headers: []
         description: ''
         custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/disburse-funds
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      accountRef:
+        name: accountRef
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      amount:
+        name: amount
+        description: 'Must match the regex /^\d+(\.\d{1,2})?$/.'
+        required: true
+        example: '2.77'
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      narration:
+        name: narration
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      destinationBankCode:
+        name: destinationBankCode
+        description: ''
+        required: true
+        example: 11613.31890586
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      destinationAccountNumber:
+        name: destinationAccountNumber
+        description: ''
+        required: true
+        example: 11613.31890586
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      accountRef: consequatur
+      amount: '2.77'
+      destinationBankCode: 11613.31890586
+      destinationAccountNumber: 11613.31890586
+    fileParameters: []
+    responses: []
     responseFields: []
     auth: []
     controller: null

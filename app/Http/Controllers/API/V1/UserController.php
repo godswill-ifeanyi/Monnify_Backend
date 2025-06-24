@@ -18,7 +18,7 @@ class UserController extends Controller
     /**
     *   Create a reserved bank account.
     *
-    
+
     * @response 201 {
     *       "status": "success",
     *       "message": "Reserved Account Created Successfully",
@@ -51,6 +51,19 @@ class UserController extends Controller
 
         $monnify = new MonnifyService();
         $account = $monnify->createReservedAccount($user);
+
+        if ($account == null) {
+            $user->delete();
+            
+            return $this->error('Something Went Wrong',  403);
+        }
+        else {
+            if ($account['requestSuccessful'] == false) {
+                $user->delete();
+
+                return $this->error($account['responseMessage'],  422);
+            }
+        }
 
         return $this->success(new UserResource($user), 'Reserved Account Created Successfully', 201);
     }
