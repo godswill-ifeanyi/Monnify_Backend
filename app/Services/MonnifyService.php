@@ -173,7 +173,7 @@ class MonnifyService
             if ($transaction->is_completed != $verify_disburse["status"]) {
                 $transaction->is_completed = $verify_disburse["status"];
                 $transaction->update();
-            }
+            } 
 
             $disburse_detail = new DisburseDetail;
             $disburse_detail->transaction_id = $transaction->id;
@@ -199,6 +199,43 @@ class MonnifyService
 
         $response = curl_exec($curl);
         curl_close($curl);
+        $result = json_decode($response, true);
+
+        return $result ?? null;
+    }
+
+    public function depositToClient($user, $amount, $paymentDescription)
+    {
+        $accessToken = $this->authenticate();
+        if (!$accessToken) return null;
+
+        $reference = $user->account_ref . now()->timestamp;
+
+        $payload = [
+            "amount" => $amount,
+            "customerName" => $user->name,
+            "customerEmail" => $user->email,
+            "paymentReference" => $reference,
+            "paymentDescription" => $paymentDescription,
+            "currencyCode" => "NGN",
+            'contractCode' => $this->contractCode,
+        ];
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "$this->baseUrl/api/v1/merchant/transactions/init-transaction",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer $accessToken",
+                "Content-Type: application/json",
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
         $result = json_decode($response, true);
 
         return $result ?? null;
