@@ -8,11 +8,14 @@ use Illuminate\Http\Request;
 use App\Models\DepositDetail;
 use App\Models\VirtualAccount;
 use App\Services\MonnifyService;
+use App\Traits\ApiResponseTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 
 class WebhookController extends Controller
 {
+    use ApiResponseTrait;
+    
      public function handle(Request $request)
     {
         $ip = $request->ip(); // Laravel detects the real IP
@@ -90,7 +93,7 @@ class WebhookController extends Controller
 
     public function test(Request $request) {
         $user = User::find(28);
-        
+
         $monnify = new MonnifyService();
         $deposit = $monnify->depositToClient($user, $request->amount, $request->paymentDescription);
 
