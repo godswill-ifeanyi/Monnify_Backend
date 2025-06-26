@@ -18,15 +18,10 @@ class WebhookController extends Controller
     
      public function handle(Request $request)
     {
-        $ip = $request->ip(); // Laravel detects the real IP
+        // IP Whitelist - Verify IP address against monnify IP  35.242.133.146
+        $ip = ($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:$_SERVER['REMOTE_HOST'];
+        if( $ip != "35.242.133.146") return $this->error('Unauthorized IP', 403);
 
-        $allowedIPs = [
-            '35.242.133.146'
-        ];
-
-        if (!in_array($ip, $allowedIPs)) {
-            return $this->error('Unauthorized IP', 403);
-        }
         // Step 1: Verify Signature
         $payload = $request->getContent();
         $signature = $request->header('monnify-signature');
