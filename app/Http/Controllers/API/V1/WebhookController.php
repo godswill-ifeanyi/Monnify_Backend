@@ -15,7 +15,7 @@ use App\Http\Resources\TransactionResource;
 class WebhookController extends Controller
 {
     use ApiResponseTrait;
-    
+
      public function handle(Request $request)
     {
         $ip = $request->ip(); // Laravel detects the real IP
@@ -91,12 +91,4 @@ class WebhookController extends Controller
         return null;
     } */
 
-    public function test(Request $request) {
-        $user = User::find(36);
-
-        $monnify = new MonnifyService();
-        $deposit = $monnify->depositToClient($user, $request->amount, $request->paymentDescription);
-
-        return response()->json($deposit);
-    }
 }

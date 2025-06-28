@@ -15,10 +15,15 @@ class TransactionResource extends JsonResource
     public function toArray(Request $request): array
     {
         $details = [];
-        
+
         if ($this->type == "debit") {
             $details = [
+                'type' => $this->type,
+                'amount' => $this->amount,
                 'totalFee' => $this->disburseDetail->total_fee,
+                'narration' => $this->narration,
+                'reference' => $this->reference,
+                'is_completed' => $this->is_completed,
                 'receiverAccountName' => $this->disburseDetail->destination_account_name,
                 'receiverAccountNumber' => $this->disburseDetail->destination_account_number,
                 'receiverBankName' => $this->disburseDetail->destination_bank_name,
@@ -26,9 +31,14 @@ class TransactionResource extends JsonResource
         }
         else if ($this->type == 'credit') {
             $details = [
-                'receiverAccountName' => $this->depositDetail->sender_account_name,
-                'receiverAccountNumber' => $this->depositDetail->sender_account_number,
-                'receiverBankName' => $this->depositDetail->sender_bank_code,
+                'type' => $this->type,
+                'amount' => $this->amount,
+                'narration' => $this->narration,
+                'reference' => $this->reference,
+                'is_completed' => $this->is_completed,
+                'senderAccountName' => $this->depositDetail->sender_account_name,
+                'senderAccountNumber' => $this->depositDetail->sender_account_number,
+                'senderBankName' => $this->depositDetail->sender_bank_code,
             ];
         }
 
@@ -37,8 +47,8 @@ class TransactionResource extends JsonResource
             'accountName' => $this->virtualAccount->account_name,
             'accountNumber' => $this->virtualAccount->account_number,
             'bankName' => $this->virtualAccount->bank_name,
-            'type' => $this->type,
-            'details' => $details
+            'transactionDetails' => $details,
+            'created_at' => $this->created_at
         ];
     }
 }

@@ -50,6 +50,14 @@ class UserController extends Controller
         $user->save();
 
         $monnify = new MonnifyService();
+
+        /* $nin_verify = $monnify->verifyNIN($user->nin);
+        if ($nin_verify['requestSuccessful'] == false) {
+                $user->delete();
+
+                return $this->error(ucwords($nin_verify['responseMessage']),  422);
+            } */
+
         $account = $monnify->createReservedAccount($user);
 
         if ($account == null) {
@@ -66,5 +74,11 @@ class UserController extends Controller
         }
 
         return $this->success(new UserResource($user), 'Reserved Account Created Successfully', 201);
+    }
+
+    public function show($account_ref) {
+        $user = User::where('account_ref', $account_ref)->first();
+
+        return $this->success(new UserResource($user), 'Reserved Account Fetched Successfully', 200);
     }
 }

@@ -44,6 +44,34 @@ class MonnifyService
         return $result['responseBody']['accessToken'] ?? null;
     }
 
+    public function verifyNIN($nin) {
+        $accessToken = $this->authenticate();
+        if (!$accessToken) return null;
+
+        $payload = [
+            "nin" => $nin,
+        ];
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "$this->baseUrl/api/v1/vas/nin-details",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer $accessToken",
+                "Content-Type: application/json",
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $result = json_decode($response, true);
+
+        return $result ?? null;
+    }
+
     public function createReservedAccount($user)
     {
         $accessToken = $this->authenticate();
@@ -236,6 +264,28 @@ class MonnifyService
         $response = curl_exec($curl);
         curl_close($curl);
 
+        $result = json_decode($response, true);
+
+        return $result ?? null;
+    }
+
+    public function getTransactionStatus($reference) 
+    {
+        $accessToken = $this->authenticate();
+        if (!$accessToken) return null;
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_URL, "$this->baseUrl/api/v2/transactions/$reference");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER,[
+            "Authorization: Bearer $accessToken",
+            "Content-Type: application/json",
+        ],);
+
+
+        $response = curl_exec($curl);
+        curl_close($curl);
         $result = json_decode($response, true);
 
         return $result ?? null;
