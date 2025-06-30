@@ -15,11 +15,13 @@ Route::prefix('v1')->group(function() {
 
     // Operations on Virtual Account
     Route::post('/verify-account', [VirtualAccountController::class, 'verify']);
+    Route::get('/get-banks', [VirtualAccountController::class, 'get_banks']);
 
     // Get Transactions
-    Route::get('/transactions', [TransactionController::class, 'index']);
+    Route::get('/transactions', [TransactionController::class, 'show_all']);
     Route::get('/transactions/{reference}', [TransactionController::class, 'show_one']);
-    Route::get('/transactions/user/{account_ref}', [TransactionController::class, 'show']);
+    Route::get('/transactions/user/{account_ref}', [TransactionController::class, 'show_all_by_user']);
+    Route::get('/transactions/status/{refernce}', [TransactionController::class, 'get_status']);
 
     // Send and Receive Funds
     Route::post('/disburse-funds', [TransactionController::class, 'disburse']);

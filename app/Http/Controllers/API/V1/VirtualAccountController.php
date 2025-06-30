@@ -36,7 +36,7 @@ class VirtualAccountController extends Controller
         $response = $monnify->verifyBankAccount($request->accountNumber, $request->bankCode);
 
         if ($response == null) {
-            return $this->error(ucwords('The server encountered an unexpected condition that prevented it from fulfilling the request'), 500);
+            return $this->error('Something Went Wrong', 500);
         }
         else {
             if ($response["requestSuccessful"] == true) {
@@ -46,6 +46,24 @@ class VirtualAccountController extends Controller
             }
             else {
                 return $this->error('Account Details Invalid', 404);
+            }
+        }
+    }
+
+    public function get_banks() {
+        $monnify = new MonnifyService();
+        $response = $monnify->getBankAccounts();
+
+        if ($response == null) {
+            return $this->error('Something Went Wrong', 500);
+        }
+        else {
+            if ($response["requestSuccessful"] == true) {
+
+                return $this->success($response["responseBody"], 'Bank Details Fetched Successfully', 200);
+            }
+            else {
+                return $this->error(ucwords($response["responseMessage"]), 404);
             }
         }
     }
