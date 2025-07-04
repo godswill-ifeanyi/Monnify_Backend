@@ -18,7 +18,7 @@ class WebhookController extends Controller
 
      public function handle(Request $request)
     {
-        $ip = $request->ip(); // Laravel detects the real IP
+        /* $ip = $request->ip(); // Laravel detects the real IP
 
         $allowedIPs = [
             '35.242.133.146'
@@ -26,7 +26,7 @@ class WebhookController extends Controller
 
         if (!in_array($ip, $allowedIPs)) {
             return $this->error('Unauthorized IP', 403);
-        }
+        } */
         // Step 1: Verify Signature
         $payload = $request->getContent();
         $signature = $request->header('monnify-signature');
@@ -78,6 +78,14 @@ class WebhookController extends Controller
             $deposit_detail->sender_account_name = $data['paymentSourceInformation'][0]['accountName'];
             $deposit_detail->sender_account_number = $data['paymentSourceInformation'][0]['accountNumber'];
             $deposit_detail->sender_bank_code = $data['paymentSourceInformation'][0]['bankCode'];
+            $deposit_detail->save();
+        }
+        else if ($data['paymentMethod'] == 'CARD') {
+            $deposit_detail = new DepositDetail;
+            $deposit_detail->transaction_id = $transaction->id;
+            $deposit_detail->sender_account_name = "CARD";
+            $deposit_detail->sender_account_number = "CARD";
+            $deposit_detail->sender_bank_code = "CARD";
             $deposit_detail->save();
         }
 
