@@ -16,7 +16,7 @@ return new class extends Migration
             $table->decimal("total_fee", 10, 2);
             $table->string('destination_bank_name');
             $table->string('destination_account_number');
-            $table->string('destination_account_name');
+            $table->string('destination_bank_code');
             $table->timestamps();
         });
     }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DisburseDetail extends Model
 {
     protected $fillable = [
-        'transaction_id','total_fee', 'destination_bank_name', 'destination_account_number', 'destination_account_name'
+        'transaction_id','total_fee', 'destination_bank_name', 'destination_account_number', 'destination_bank_code'
     ];
 
     public function transaction()
