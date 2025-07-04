@@ -6,4 +6,5 @@ return [
     'contract_code' => env('MONNIFY_CONTRACT_CODE'),
     'base_url' => env('MONNIFY_BASE_URL'),
     'main_account_number' => env('MONNIFY_ACCOUNT_NUMBER'),
+    'main_account_name' => env('MONNIFY_ACCOUNT_NAME'),
 ];

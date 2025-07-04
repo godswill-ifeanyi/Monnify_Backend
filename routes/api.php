@@ -4,11 +4,15 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\V1\UserController;
+use App\Http\Controllers\API\V1\AdminController;
 use App\Http\Controllers\API\V1\WebhookController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\VirtualAccountController;
 
 Route::prefix('v1')->group(function() {
+    // Admin Monnify Account
+    Route::get('/account-details/admin/{account_number}', [AdminController::class, 'show']);
+
     // Create Account
     Route::post('/create-account', [UserController::class, 'create']);
     Route::get('/account-details/{account_ref}', [UserController::class, 'show']);

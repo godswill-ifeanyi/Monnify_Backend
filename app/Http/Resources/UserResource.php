@@ -19,8 +19,8 @@ class UserResource extends JsonResource
             'chamberName' => $this->chamber_name,
             'email' => $this->email,
             'nin' => $this->nin,
-            'accountRef' => $this->account_ref,
             'bankDetails' => [
+                'accountRef' => $this->account_ref,
                 'accountNumber' => $this->virtualAccount->account_number,
                 'accountName' => $this->virtualAccount->account_name,
                 'bankName' => $this->virtualAccount->bank_name
