@@ -293,7 +293,7 @@ class MonnifyService
         return $result ?? null;
     }
 
-    public function depositToClient($user, $amount, $paymentDescription = "Card Deposit")
+    public function depositToClient($user, $amount, $description = "Card Deposit")
     {
         $accessToken = $this->authenticate();
         if (!$accessToken) return null;
@@ -305,7 +305,7 @@ class MonnifyService
             "customerName" => $user->name,
             "customerEmail" => $user->email,
             "paymentReference" => $reference,
-            "paymentDescription" => $paymentDescription,
+            "paymentDescription" => $description,
             "currencyCode" => "NGN",
             'contractCode' => $this->contractCode,
         ];

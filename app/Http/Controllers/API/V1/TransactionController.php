@@ -190,7 +190,7 @@ class TransactionController extends Controller
         }
 
         $monnify = new MonnifyService();
-        $deposit = $monnify->depositToClient($user, $data['amount'], $data['paymentDescription']);
+        $deposit = $monnify->depositToClient($user, $data['amount'], $data['description']);
 
         return response()->json($deposit);
     }
