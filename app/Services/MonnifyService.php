@@ -298,7 +298,7 @@ class MonnifyService
         $accessToken = $this->authenticate();
         if (!$accessToken) return null;
 
-        $reference = $user->account_ref;
+        $reference = $user->account_ref . now()->timestamp;
 
         $payload = [
             "amount" => $amount,
@@ -308,6 +308,7 @@ class MonnifyService
             "paymentDescription" => $description ?? "Card Deposit",
             "currencyCode" => "NGN",
             'contractCode' => $this->contractCode,
+            "paymentMethods" => ["CARD","ACCOUNT_TRANSFER"],
         ];
 
         $curl = curl_init();

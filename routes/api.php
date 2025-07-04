@@ -26,7 +26,7 @@ Route::prefix('v1')->group(function() {
     Route::get('/transactions/{reference}', [TransactionController::class, 'show_one']);
     Route::get('/transactions/user/{account_ref}', [TransactionController::class, 'show_all_by_user']);
     Route::get('/transactions/status/{refernce}', [TransactionController::class, 'get_status']);
-
+ 
     // Send and Receive Funds
     Route::post('/disburse-funds', [TransactionController::class, 'disburse']);
     Route::post('/pay-online', [TransactionController::class, 'pay']);

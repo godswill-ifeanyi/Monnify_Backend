@@ -43,12 +43,17 @@ class WebhookController extends Controller
         $data = $request->json('eventData');
 
         // Step 2: Check if transaction already exists
-        if (Transaction::where('reference', $data['paymentReference'])->exists()) {
+        if (Transaction::where('reference', $data['transactionReference'])->exists()) {
             return $this->error('Duplicate Transaction', 409);
         }
 
         // Step 3: Credit client’s virtual account
-        $accountReference = $data['product']['reference'];
+        if ($data['product']['type'] == 'RESERVED_ACCOUNT'){
+            $accountReference = $data['product']['reference'];
+        }
+        else if ($data['product']['type'] == 'WEB_SDK') {
+            $accountReference = substr($data['product']['reference'],0,19);
+        }
         $amount = $data['amountPaid'];
 
         $user = User::where('account_ref', $accountReference)->first();
