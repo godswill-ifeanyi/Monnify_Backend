@@ -73,6 +73,7 @@ class WebhookController extends Controller
         $transaction->save();
 
         $deposit_detail = new DepositDetail;
+        $deposit_detail->transaction_id = $transaction->id;
         $deposit_detail->sender_account_name = $data['"paymentSourceInformation"']['accountName'];
         $deposit_detail->sender_account_number = $data['"paymentSourceInformation"']['accountNumber'];
         $deposit_detail->sender_bank_code = $data['"paymentSourceInformation"']['bankCode'];
