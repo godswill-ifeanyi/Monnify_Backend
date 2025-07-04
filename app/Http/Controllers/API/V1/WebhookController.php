@@ -89,7 +89,7 @@ class WebhookController extends Controller
             $deposit_detail->save();
         }
 
-        return $this->success(new TransactionResource($transaction), 'Account Credited '.$amount, 200);
+        return $this->success(new TransactionResource($transaction), 'Account Credited N'.$amount, 200);
     }
 
     /* private function extractClientIdFromReference($reference): ?int
