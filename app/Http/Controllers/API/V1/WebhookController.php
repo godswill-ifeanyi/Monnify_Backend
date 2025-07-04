@@ -18,7 +18,7 @@ class WebhookController extends Controller
 
      public function handle(Request $request)
     {
-        /* $ip = $request->ip(); // Laravel detects the real IP
+        $ip = $request->ip(); // Laravel detects the real IP
 
         $allowedIPs = [
             '35.242.133.146'
@@ -38,7 +38,7 @@ class WebhookController extends Controller
 
         if ($signature !== $computedHash) {
             return $this->error('Signature Invalid', 403);
-        }*/
+        }
 
         $data = $request->json('eventData');
 
