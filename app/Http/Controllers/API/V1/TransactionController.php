@@ -157,7 +157,7 @@ class TransactionController extends Controller
                 "dateCreated"=> $disburse['responseBody']["dateCreated"]
             ];
 
-            return $this->success($response, 'Funds Successfully Disbursed', 200);
+            return $this->success($disburse['responseBody'], 'Funds Successfully Disbursed', 200);
         }
         else {
             return $this->error(ucwords($disburse['responseMessage']),  500);
