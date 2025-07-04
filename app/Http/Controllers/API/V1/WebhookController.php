@@ -26,7 +26,7 @@ class WebhookController extends Controller
 
         if (!in_array($ip, $allowedIPs)) {
             return $this->error('Unauthorized IP', 403);
-        } */
+        } 
         // Step 1: Verify Signature
         $payload = $request->getContent();
         $signature = $request->header('monnify-signature');
@@ -38,7 +38,7 @@ class WebhookController extends Controller
 
         if ($signature !== $computedHash) {
             return $this->error('Signature Invalid', 403);
-        }
+        }*/
 
         $data = $request->json('eventData');
 
