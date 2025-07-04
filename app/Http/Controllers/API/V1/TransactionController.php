@@ -133,7 +133,7 @@ class TransactionController extends Controller
         $destination = [$bank_code, $account_number];
 
         $monnify = new MonnifyService();
-        $disburse = $monnify->disburseToClient($user, $destination, $request->amount, $request->narration);
+        $disburse = $monnify->disburseToClient($user, $destination, $request->amount, $request->narration ?? null);
 
         if ($disburse == null) {
             return $this->error('Something Went Wrong', 500);
@@ -190,7 +190,7 @@ class TransactionController extends Controller
         }
 
         $monnify = new MonnifyService();
-        $deposit = $monnify->depositToClient($user, $data['amount'], $data['description']);
+        $deposit = $monnify->depositToClient($user, $data['amount'], $data['description'] ?? null);
 
         return response()->json($deposit);
     }

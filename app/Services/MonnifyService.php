@@ -210,7 +210,7 @@ class MonnifyService
         return $result ?? null;
     }
 
-    public function disburseToClient($user, $destination, $amount, $narration = 'Chamber withdrawal')
+    public function disburseToClient($user, $destination, $amount, $narration)
     {
         $accessToken = $this->authenticate();
         if (!$accessToken) return null;
@@ -227,7 +227,7 @@ class MonnifyService
         $payload = [
             "amount" => $amount,
             "reference" => $reference,
-            "narration" => $narration,
+            "narration" => $narration ?? 'Chamber Withdrawal',
             "destinationBankCode" => $destination[0],
             "destinationAccountNumber" => $destination[1],
             "currency" => "NGN",
@@ -293,19 +293,19 @@ class MonnifyService
         return $result ?? null;
     }
 
-    public function depositToClient($user, $amount, $description = "Card Deposit")
+    public function depositToClient($user, $amount, $description)
     {
         $accessToken = $this->authenticate();
         if (!$accessToken) return null;
 
-        $reference = $user->account_ref . now()->timestamp;
+        $reference = $user->account_ref;
 
         $payload = [
             "amount" => $amount,
             "customerName" => $user->name,
             "customerEmail" => $user->email,
             "paymentReference" => $reference,
-            "paymentDescription" => $description,
+            "paymentDescription" => $description ?? "Card Deposit",
             "currencyCode" => "NGN",
             'contractCode' => $this->contractCode,
         ];
