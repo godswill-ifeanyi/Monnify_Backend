@@ -146,15 +146,15 @@ class TransactionController extends Controller
         if ($disburse['requestSuccessful'] == true) {
 
             $response = [
-                "amount"=> $disburse["amount"],
-                "reference"=> $disburse["reference"],
-                "totalFee"=> $disburse["totalFee"],
-                "destinationAccountName"=> $disburse["destinationAccountName"],
-                "destinationBankName"=> $disburse["destinationBankName"],
-                "destinationAccountNumber"=> $disburse["destinationAccountNumber"],
-                "destinationBankCode"=> $disburse["destinationBankCode"],
-                "isCompleted" => $disburse["status"],
-                "dateCreated"=> $disburse["dateCreated"]
+                "amount"=> $disburse['responseBody']["amount"],
+                "reference"=> $disburse['responseBody']["reference"],
+                "totalFee"=> $disburse['responseBody']["totalFee"],
+                /* "destinationAccountName"=> $disburse["destinationAccountName"], */
+                "destinationBankName"=> $disburse['responseBody']["destinationBankName"],
+                "destinationAccountNumber"=> $disburse['responseBody']["destinationAccountNumber"],
+                "destinationBankCode"=> $disburse['responseBody']["destinationBankCode"],
+                "isCompleted" => $disburse['responseBody']["status"],
+                "dateCreated"=> $disburse['responseBody']["dateCreated"]
             ];
 
             return $this->success($response, 'Funds Successfully Disbursed', 200);
