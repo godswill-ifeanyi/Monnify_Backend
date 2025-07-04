@@ -124,7 +124,7 @@ class TransactionController extends Controller
         $user = User::where('account_ref', $request->accountRef)->first();
 
         if (!$user) {
-            return $this->error('User Account Ref Invalid', 500);
+            return $this->error('Account Not Found', 404);
         }
 
         $bank_code = $request->destinationBankCode;
@@ -181,14 +181,16 @@ class TransactionController extends Controller
     }
 
     public function pay(PayRequest $request) {
-        $user = User::where('account_ref', $request->account_ref)->first();
+        $data = $request->validated();
+
+        $user = User::where('account_ref', $data['accountRef'])->first();
 
         if (!$user) {
             return $this->error('Account Not Found', 404);
         }
 
         $monnify = new MonnifyService();
-        $deposit = $monnify->depositToClient($user, $request->amount, $request->paymentDescription);
+        $deposit = $monnify->depositToClient($user, $data['amount'], $data['paymentDescription']);
 
         return response()->json($deposit);
     }
