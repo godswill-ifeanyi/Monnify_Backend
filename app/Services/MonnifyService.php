@@ -266,10 +266,10 @@ class MonnifyService
 
             $disburse_detail = new DisburseDetail;
             $disburse_detail->transaction_id = $transaction->id;
-            $disburse_detail->total_fee = isset($result['totalFee']) ? $result['totalFee'] : 0;
-            $disburse_detail->destination_bank_name = $result['destinationBankName'];
-            $disburse_detail->destination_account_number = $result['destinationAccountNumber'];
-            $disburse_detail->destination_account_name = $result['destinationAccountName'];
+            $disburse_detail->total_fee = $result['responseBody']['totalFee'];
+            $disburse_detail->destination_bank_name = $result['responseBody']['destinationBankName'];
+            $disburse_detail->destination_account_number = $result['responseBody']['destinationAccountNumber'];
+            $disburse_detail->destination_account_name = $result['responseBody']['destinationAccountName'];
             $disburse_detail->save();
         }
 
