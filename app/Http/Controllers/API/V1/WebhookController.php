@@ -72,12 +72,14 @@ class WebhookController extends Controller
         $transaction->is_completed = $data['paymentStatus'];
         $transaction->save();
 
-        $deposit_detail = new DepositDetail;
-        $deposit_detail->transaction_id = $transaction->id;
-        $deposit_detail->sender_account_name = $data['"paymentSourceInformation"'][0]['accountName'];
-        $deposit_detail->sender_account_number = $data['"paymentSourceInformation"'][0]['accountNumber'];
-        $deposit_detail->sender_bank_code = $data['"paymentSourceInformation"'][0]['bankCode'];
-        $deposit_detail->save();
+        if ($data['paymentMethod'] == 'ACCOUNT_TRANSFER') {
+            $deposit_detail = new DepositDetail;
+            $deposit_detail->transaction_id = $transaction->id;
+            $deposit_detail->sender_account_name = $data['paymentSourceInformation'][0]['accountName'];
+            $deposit_detail->sender_account_number = $data['paymentSourceInformation'][0]['accountNumber'];
+            $deposit_detail->sender_bank_code = $data['paymentSourceInformation'][0]['bankCode'];
+            $deposit_detail->save();
+        }
 
         return $this->success(new TransactionResource($transaction), 'Account Credited '.$amount, 200);
     }
