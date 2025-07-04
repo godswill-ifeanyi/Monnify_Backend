@@ -23,7 +23,7 @@ class PayRequest extends FormRequest
     {
         return [
             'accountRef' => 'required|string',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'description' => 'nullable'
         ];
     }

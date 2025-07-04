@@ -183,6 +183,10 @@ class TransactionController extends Controller
     public function pay(PayRequest $request) {
         $user = User::where('account_ref', $request->account_ref)->first();
 
+        if (!$user) {
+            return $this->error('Account Not Found', 404);
+        }
+
         $monnify = new MonnifyService();
         $deposit = $monnify->depositToClient($user, $request->amount, $request->paymentDescription);
 
