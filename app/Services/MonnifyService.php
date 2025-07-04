@@ -293,7 +293,7 @@ class MonnifyService
         return $result ?? null;
     }
 
-    public function depositToClient($user, $amount, $paymentDescription)
+    public function depositToClient($user, $amount, $paymentDescription = "Card Deposit")
     {
         $accessToken = $this->authenticate();
         if (!$accessToken) return null;
