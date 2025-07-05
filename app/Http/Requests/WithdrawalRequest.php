@@ -29,4 +29,39 @@ class WithdrawalRequest extends FormRequest
             'destinationAccountNumber' => 'required|numeric'
         ];
     }
+
+    /**
+     * Get the body parameters for the request.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'accountRef' => [
+                'type' => 'string',
+                'required' => true,
+                'example' => 'cliApp68400ed1b4b25'
+            ],
+            'amount' => [
+                'type' => 'float',
+                'required' => true,
+                'example' => 2000.00
+            ],
+            'narration' => [
+                'required' => false,
+                'example' => 'This is a gift money withdrawal'
+            ],
+            'destinationBankCode' => [
+                'type' => 'string',
+                'required' => true,
+                'example' => '044'
+            ],
+            'destinationAccountNumber' => [
+                'type' => 'string',
+                'required' => true,
+                'example' => '069157103'
+            ],
+        ];
+    }
 }

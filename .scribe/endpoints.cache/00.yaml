@@ -334,25 +334,25 @@ endpoints:
                 "status": "success",
                 "message": "Banks Details Fetched Successfully",
                 "data": [
-                            {
-                                "name": "9JAPAY MICROFINANCE BANK",
-                                "code": "090629",
-                                "ussdTemplate": null,
-                                "baseUssdCode": null,
-                                "transferUssdTemplate": null,
-                                "bankId": null,
-                                "nipBankCode": "090629"
-                            },
-                            {
-                                "name": "Access bank",
-                                "code": "044",
-                                "ussdTemplate": "*901*Amount*AccountNumber#",
-                                "baseUssdCode": "*901#",
-                                "transferUssdTemplate": "*901*AccountNumber#",
-                                "bankId": null,
-                                "nipBankCode": "000014"
-                            }
-                }
+                     {
+                         "name": "9JAPAY MICROFINANCE BANK",
+                         "code": "090629",
+                         "ussdTemplate": null,
+                         "baseUssdCode": null,
+                         "transferUssdTemplate": null,
+                         "bankId": null,
+                         "nipBankCode": "090629"
+                      },
+                      {
+                          "name": "Access bank",
+                          "code": "044",
+                          "ussdTemplate": "*901*Amount*AccountNumber#",
+                          "baseUssdCode": "*901#",
+                          "transferUssdTemplate": "*901*AccountNumber#",
+                          "bankId": null,
+                          "nipBankCode": "000014"
+                       }
+                ]
           }
         headers: []
         description: ''
@@ -372,8 +372,11 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Get all transactions'
+      description: |-
+        If everything is okay, you'll get a 200 OK response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
       authenticated: false
       custom: []
     headers:
@@ -388,16 +391,51 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 500
+        status: 200
         content: |-
           {
-              "message": "Server Error"
+                "status": "success",
+                "message": "Transaction(s) Fetched Successfully",
+                "data": [
+                    {
+                        "accountRef": "cliApp68400ed1b4b25",
+                        "accountName": "KIN",
+                        "accountNumber": 3396488285,
+                        "bankName": "Wema bank",
+                        "transactionDetails": {
+                            "type": "credit",
+                            "amount": "100.00",
+                            "narration": "Loan",
+                            "reference": "cliApp68400ed1b4b25-7544734744",
+                            "isCompleted": "FAILED",
+                            "senderAccountName": "John Obi",
+                            "senderAccountNumber": "4574757787",
+                            "senderBankName": "035"
+                        },
+                        "createdAt": "2025-06-04T09:16:05.000000Z"
+                    },
+                    {
+                        "accountRef": "cliApp68400ed1b4b25",
+                        "accountName": "KIN",
+                        "accountNumber": 3396488285,
+                        "bankName": "Wema bank",
+                        "transactionDetails": {
+                            "type": "debit",
+                            "amount": "2000.00",
+                            "totalFee": "10.00",
+                            "narration": "Gift",
+                            "reference": "cliApp68400ed1b4b25-734373733733",
+                            "isCompleted": "PAID",
+                            "receiverAccountName": "IFEANYI OKPANKU",
+                            "receiverAccountNumber": "0691571803",
+                            "receiverBankName": "Access Bank"
+                        },
+                        "createdAt": "2025-06-04T09:16:05.000000Z"
+                    }
+                ]
           }
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -408,14 +446,17 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/transactions/{reference}'
+    uri: 'api/v1/transaction/{reference}'
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Get one transaction'
+      description: |-
+        Replace endpoint with the transaction reference. If everything is okay, you'll get a 200 OK response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
       authenticated: false
       custom: []
     headers:
@@ -424,16 +465,16 @@ endpoints:
     urlParameters:
       reference:
         name: reference
-        description: ''
+        description: 'The reference of the transaction.'
         required: true
-        example: 1
-        type: integer
+        example: cliApp68400ed1b4b25-7544734744
+        type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      reference: 1
+      reference: cliApp68400ed1b4b25-7544734744
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -441,13 +482,31 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 404
-        content: '{"status":"error","message":"Transaction Not Found"}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        status: 200
+        content: |-
+          {
+                "status": "success",
+                "message": "Transaction Fetched Successfully",
+                "data": {
+                     "accountRef": "cliApp68400ed1b4b25",
+                     "accountName": "KIN",
+                     "accountNumber": 3396488285,
+                     "bankName": "Wema bank",
+                     "transactionDetails": {
+                         "type": "credit",
+                         "amount": "100.00",
+                         "narration": "Loan",
+                         "reference": "cliApp68400ed1b4b25-7544734744",
+                         "isCompleted": "FAILED",
+                         "senderAccountName": "John Obi",
+                         "senderAccountNumber": "4574757787",
+                         "senderBankName": "035"
+                     },
+                     "createdAt": "2025-06-04T09:16:05.000000Z"
+                 }
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -464,8 +523,11 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Get all user transactions'
+      description: |-
+        Replace endpoint with the user's account ref. If everything is okay, you'll get a 200 OK response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
       authenticated: false
       custom: []
     headers:
@@ -474,16 +536,16 @@ endpoints:
     urlParameters:
       account_ref:
         name: account_ref
-        description: ''
+        description: "The user's account_ref."
         required: true
-        example: consequatur
+        example: cliApp68400ed1b4b25
         type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      account_ref: consequatur
+      account_ref: cliApp68400ed1b4b25
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -491,16 +553,51 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 500
+        status: 200
         content: |-
           {
-              "message": "Server Error"
+                "status": "success",
+                "message": "Transaction(s) Fetched Successfully",
+                "data": [
+                    {
+                        "accountRef": "cliApp68400ed1b4b25",
+                        "accountName": "KIN",
+                        "accountNumber": 3396488285,
+                        "bankName": "Wema bank",
+                        "transactionDetails": {
+                            "type": "credit",
+                            "amount": "100.00",
+                            "narration": "Loan",
+                            "reference": "cliApp68400ed1b4b25-7544734744",
+                            "isCompleted": "FAILED",
+                            "senderAccountName": "John Obi",
+                            "senderAccountNumber": "4574757787",
+                            "senderBankName": "035"
+                        },
+                        "createdAt": "2025-06-04T09:16:05.000000Z"
+                    },
+                    {
+                        "accountRef": "cliApp68400ed1b4b25",
+                        "accountName": "KIN",
+                        "accountNumber": 3396488285,
+                        "bankName": "Wema bank",
+                        "transactionDetails": {
+                            "type": "debit",
+                            "amount": "2000.00",
+                            "totalFee": "10.00",
+                            "narration": "Gift",
+                            "reference": "cliApp68400ed1b4b25-734373733733",
+                            "isCompleted": "PAID",
+                            "receiverAccountName": "IFEANYI OKPANKU",
+                            "receiverAccountNumber": "0691571803",
+                            "receiverBankName": "Access Bank"
+                        },
+                        "createdAt": "2025-06-04T09:16:05.000000Z"
+                    }
+                ]
           }
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -511,32 +608,35 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/transactions/status/{refernce}'
+    uri: 'api/v1/transaction/status/{reference}'
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Get transaction status'
+      description: |-
+        Replace endpoint with the transaction reference. If everything is okay, you'll get a 200 OK response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
       authenticated: false
       custom: []
     headers:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      refernce:
-        name: refernce
-        description: ''
+      reference:
+        name: reference
+        description: 'The reference of the transaction.'
         required: true
-        example: consequatur
+        example: MNFY|02|20250704161048|000089
         type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      refernce: consequatur
+      reference: MNFY|02|20250704161048|000089
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -544,13 +644,17 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 404
-        content: '{"status":"error","message":"Transaction Reference Not Found"}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        status: 200
+        content: |-
+          {
+                "status": "success",
+                "message": "Transaction Status Fetched Successfully",
+                "data": {
+                     "isCompleted": "PAID",
+                }
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -567,8 +671,11 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Disburse(withdraw) funds.'
+      description: |-
+        Send the required parameters as JSON. If everything is okay, you'll get a 201 Created response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
       authenticated: false
       custom: []
     headers:
@@ -583,7 +690,7 @@ endpoints:
         name: accountRef
         description: ''
         required: true
-        example: consequatur
+        example: cliApp68400ed1b4b25
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -593,7 +700,7 @@ endpoints:
         name: amount
         description: 'Must match the regex /^\d+(\.\d{1,2})?$/.'
         required: true
-        example: '2.77'
+        example: 2000.0
         type: number
         enumValues: []
         exampleWasSpecified: false
@@ -603,7 +710,7 @@ endpoints:
         name: narration
         description: ''
         required: false
-        example: null
+        example: 'This is a gift money withdrawal'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -613,7 +720,7 @@ endpoints:
         name: destinationBankCode
         description: ''
         required: true
-        example: 11613.31890586
+        example: 44.0
         type: number
         enumValues: []
         exampleWasSpecified: false
@@ -623,19 +730,97 @@ endpoints:
         name: destinationAccountNumber
         description: ''
         required: true
-        example: 11613.31890586
+        example: 69157103.0
         type: number
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      accountRef: consequatur
-      amount: '2.77'
-      destinationBankCode: 11613.31890586
-      destinationAccountNumber: 11613.31890586
+      accountRef: cliApp68400ed1b4b25
+      amount: 2000.0
+      narration: 'This is a gift money withdrawal'
+      destinationBankCode: 44.0
+      destinationAccountNumber: 69157103.0
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+                "status": "success",
+                "message": "Funds Successfully Disbursed",
+                "data": {
+                    "amount": 350,,
+                    "reference": "cliApp6867b27d3a2c3-1751707790",
+                    "status": "PENDING_AUTHORIZATION",
+                    "dateCreated": "2025-07-05T09:29:51.274+00:00",
+                    "totalFee": 35,
+                    "destinationBankName": "Access bank",
+                    "destinationAccountNumber": "0691571803",
+                    "destinationBankCode": "044"
+                }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/disburse-funds/status/{reference}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get disburse transaction status'
+      description: |-
+        Replace endpoint with the disburse transaction reference. If everything is okay, you'll get a 200 OK response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      reference:
+        name: reference
+        description: 'The reference of the disburse transaction.'
+        required: true
+        example: cliApp68400ed1b4b25-7544734744
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      reference: cliApp68400ed1b4b25-7544734744
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+                "status": "success",
+                "message": "Transaction Status Fetched Successfully",
+                "data": {
+                     "isCompleted": "PAID",
+                }
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -651,8 +836,11 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Topup with card.'
+      description: |-
+        Send the required parameters as JSON. If everything is okay, you'll get a 200 OK response.
+
+        Then redirect user to the checkout URL to complete payment.
       authenticated: false
       custom: []
     headers:
@@ -667,7 +855,7 @@ endpoints:
         name: accountRef
         description: ''
         required: true
-        example: consequatur
+        example: cliApp68400ed1b4b25
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -677,7 +865,7 @@ endpoints:
         name: amount
         description: 'Must match the regex /^\d+(\.\d{1,2})?$/.'
         required: true
-        example: '2.77'
+        example: 2000.0
         type: number
         enumValues: []
         exampleWasSpecified: false
@@ -687,17 +875,31 @@ endpoints:
         name: description
         description: ''
         required: false
-        example: null
+        example: 'This is a gift money deposit'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
         custom: []
     cleanBodyParameters:
-      accountRef: consequatur
-      amount: '2.77'
+      accountRef: cliApp68400ed1b4b25
+      amount: 2000.0
+      description: 'This is a gift money deposit'
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+                "status": "success",
+                "message": "Successful, Redirect To Checkout",
+                "data": {
+                    "checkoutURL": "https://sandbox.sdk.monnify.com/checkout/MNFY|08|20250705105040|000183",
+                }
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -713,8 +915,11 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Received funds.'
+      description: |-
+        Notification is sent to this endpoint whenever a user receives a topup either by transfer or card. If everything is okay, you'll get a 201 Created response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
       authenticated: false
       custom: []
     headers:
@@ -727,7 +932,34 @@ endpoints:
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+                "status": "success",
+                "message": "Account Credited N1000",
+                "data": {
+                        "accountRef": "cliApp68400ed1b4b25",
+                        "accountName": "KIN",
+                        "accountNumber": 3396488285,
+                        "bankName": "Wema bank",
+                        "transactionDetails": {
+                            "type": "credit",
+                            "amount": "1000.00",
+                            "narration": "Loan",
+                            "reference": "cliApp68400ed1b4b25-7544734744",
+                            "isCompleted": "FAILED",
+                            "senderAccountName": "John Obi",
+                            "senderAccountNumber": "4574757787",
+                            "senderBankName": "035"
+                        },
+                        "createdAt": "2025-06-04T09:16:05.000000Z"
+                    }
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null

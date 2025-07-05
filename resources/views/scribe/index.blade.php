@@ -87,25 +87,28 @@
                                 <a href="#endpoints-GETapi-v1-get-banks">Get Nigerian banks details</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-transactions">
-                                <a href="#endpoints-GETapi-v1-transactions">GET api/v1/transactions</a>
+                                <a href="#endpoints-GETapi-v1-transactions">Get all transactions</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-transactions--reference-">
-                                <a href="#endpoints-GETapi-v1-transactions--reference-">GET api/v1/transactions/{reference}</a>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-transaction--reference-">
+                                <a href="#endpoints-GETapi-v1-transaction--reference-">Get one transaction</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-transactions-user--account_ref-">
-                                <a href="#endpoints-GETapi-v1-transactions-user--account_ref-">GET api/v1/transactions/user/{account_ref}</a>
+                                <a href="#endpoints-GETapi-v1-transactions-user--account_ref-">Get all user transactions</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-transactions-status--refernce-">
-                                <a href="#endpoints-GETapi-v1-transactions-status--refernce-">GET api/v1/transactions/status/{refernce}</a>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-transaction-status--reference-">
+                                <a href="#endpoints-GETapi-v1-transaction-status--reference-">Get transaction status</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-v1-disburse-funds">
-                                <a href="#endpoints-POSTapi-v1-disburse-funds">POST api/v1/disburse-funds</a>
+                                <a href="#endpoints-POSTapi-v1-disburse-funds">Disburse(withdraw) funds.</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-disburse-funds-status--reference-">
+                                <a href="#endpoints-GETapi-v1-disburse-funds-status--reference-">Get disburse transaction status</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-v1-pay-online">
-                                <a href="#endpoints-POSTapi-v1-pay-online">POST api/v1/pay-online</a>
+                                <a href="#endpoints-POSTapi-v1-pay-online">Topup with card.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-v1-webhook-credit">
-                                <a href="#endpoints-POSTapi-v1-webhook-credit">POST api/v1/webhook/credit</a>
+                                <a href="#endpoints-POSTapi-v1-webhook-credit">Received funds.</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -815,28 +818,28 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-      &quot;status&quot;: &quot;success&quot;,
-      &quot;message&quot;: &quot;Banks Details Fetched Successfully&quot;,
-      &quot;data&quot;: [
-                  {
-                      &quot;name&quot;: &quot;9JAPAY MICROFINANCE BANK&quot;,
-                      &quot;code&quot;: &quot;090629&quot;,
-                      &quot;ussdTemplate&quot;: null,
-                      &quot;baseUssdCode&quot;: null,
-                      &quot;transferUssdTemplate&quot;: null,
-                      &quot;bankId&quot;: null,
-                      &quot;nipBankCode&quot;: &quot;090629&quot;
-                  },
-                  {
-                      &quot;name&quot;: &quot;Access bank&quot;,
-                      &quot;code&quot;: &quot;044&quot;,
-                      &quot;ussdTemplate&quot;: &quot;*901*Amount*AccountNumber#&quot;,
-                      &quot;baseUssdCode&quot;: &quot;*901#&quot;,
-                      &quot;transferUssdTemplate&quot;: &quot;*901*AccountNumber#&quot;,
-                      &quot;bankId&quot;: null,
-                      &quot;nipBankCode&quot;: &quot;000014&quot;
-                  }
-      }
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Banks Details Fetched Successfully&quot;,
+    &quot;data&quot;: [
+        {
+            &quot;name&quot;: &quot;9JAPAY MICROFINANCE BANK&quot;,
+            &quot;code&quot;: &quot;090629&quot;,
+            &quot;ussdTemplate&quot;: null,
+            &quot;baseUssdCode&quot;: null,
+            &quot;transferUssdTemplate&quot;: null,
+            &quot;bankId&quot;: null,
+            &quot;nipBankCode&quot;: &quot;090629&quot;
+        },
+        {
+            &quot;name&quot;: &quot;Access bank&quot;,
+            &quot;code&quot;: &quot;044&quot;,
+            &quot;ussdTemplate&quot;: &quot;*901*Amount*AccountNumber#&quot;,
+            &quot;baseUssdCode&quot;: &quot;*901#&quot;,
+            &quot;transferUssdTemplate&quot;: &quot;*901*AccountNumber#&quot;,
+            &quot;bankId&quot;: null,
+            &quot;nipBankCode&quot;: &quot;000014&quot;
+        }
+    ]
 }</code>
  </pre>
     </span>
@@ -911,12 +914,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                    <h2 id="endpoints-GETapi-v1-transactions">GET api/v1/transactions</h2>
+                    <h2 id="endpoints-GETapi-v1-transactions">Get all transactions</h2>
 
 <p>
 </p>
 
-
+<p>If everything is okay, you'll get a 200 OK response.</p>
+<p>Otherwise, the request will fail with an error, and a response listing the failed services.</p>
 
 <span id="example-requests-GETapi-v1-transactions">
 <blockquote>Example request:</blockquote>
@@ -948,19 +952,50 @@ fetch(url, {
 
 <span id="example-responses-GETapi-v1-transactions">
             <blockquote>
-            <p>Example response (500):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Server Error&quot;
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Transaction(s) Fetched Successfully&quot;,
+    &quot;data&quot;: [
+        {
+            &quot;accountRef&quot;: &quot;cliApp68400ed1b4b25&quot;,
+            &quot;accountName&quot;: &quot;KIN&quot;,
+            &quot;accountNumber&quot;: 3396488285,
+            &quot;bankName&quot;: &quot;Wema bank&quot;,
+            &quot;transactionDetails&quot;: {
+                &quot;type&quot;: &quot;credit&quot;,
+                &quot;amount&quot;: &quot;100.00&quot;,
+                &quot;narration&quot;: &quot;Loan&quot;,
+                &quot;reference&quot;: &quot;cliApp68400ed1b4b25-7544734744&quot;,
+                &quot;isCompleted&quot;: &quot;FAILED&quot;,
+                &quot;senderAccountName&quot;: &quot;John Obi&quot;,
+                &quot;senderAccountNumber&quot;: &quot;4574757787&quot;,
+                &quot;senderBankName&quot;: &quot;035&quot;
+            },
+            &quot;createdAt&quot;: &quot;2025-06-04T09:16:05.000000Z&quot;
+        },
+        {
+            &quot;accountRef&quot;: &quot;cliApp68400ed1b4b25&quot;,
+            &quot;accountName&quot;: &quot;KIN&quot;,
+            &quot;accountNumber&quot;: 3396488285,
+            &quot;bankName&quot;: &quot;Wema bank&quot;,
+            &quot;transactionDetails&quot;: {
+                &quot;type&quot;: &quot;debit&quot;,
+                &quot;amount&quot;: &quot;2000.00&quot;,
+                &quot;totalFee&quot;: &quot;10.00&quot;,
+                &quot;narration&quot;: &quot;Gift&quot;,
+                &quot;reference&quot;: &quot;cliApp68400ed1b4b25-734373733733&quot;,
+                &quot;isCompleted&quot;: &quot;PAID&quot;,
+                &quot;receiverAccountName&quot;: &quot;IFEANYI OKPANKU&quot;,
+                &quot;receiverAccountNumber&quot;: &quot;0691571803&quot;,
+                &quot;receiverBankName&quot;: &quot;Access Bank&quot;
+            },
+            &quot;createdAt&quot;: &quot;2025-06-04T09:16:05.000000Z&quot;
+        }
+    ]
 }</code>
  </pre>
     </span>
@@ -1035,27 +1070,28 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                    <h2 id="endpoints-GETapi-v1-transactions--reference-">GET api/v1/transactions/{reference}</h2>
+                    <h2 id="endpoints-GETapi-v1-transaction--reference-">Get one transaction</h2>
 
 <p>
 </p>
 
+<p>Replace endpoint with the transaction reference. If everything is okay, you'll get a 200 OK response.</p>
+<p>Otherwise, the request will fail with an error, and a response listing the failed services.</p>
 
-
-<span id="example-requests-GETapi-v1-transactions--reference-">
+<span id="example-requests-GETapi-v1-transaction--reference-">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/transactions/1" \
+    --get "http://localhost/api/v1/transaction/cliApp68400ed1b4b25-7544734744" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/transactions/1"
+    "http://localhost/api/v1/transaction/cliApp68400ed1b4b25-7544734744"
 );
 
 const headers = {
@@ -1070,62 +1106,72 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-GETapi-v1-transactions--reference-">
+<span id="example-responses-GETapi-v1-transaction--reference-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;status&quot;: &quot;error&quot;,
-    &quot;message&quot;: &quot;Transaction Not Found&quot;
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Transaction Fetched Successfully&quot;,
+    &quot;data&quot;: {
+        &quot;accountRef&quot;: &quot;cliApp68400ed1b4b25&quot;,
+        &quot;accountName&quot;: &quot;KIN&quot;,
+        &quot;accountNumber&quot;: 3396488285,
+        &quot;bankName&quot;: &quot;Wema bank&quot;,
+        &quot;transactionDetails&quot;: {
+            &quot;type&quot;: &quot;credit&quot;,
+            &quot;amount&quot;: &quot;100.00&quot;,
+            &quot;narration&quot;: &quot;Loan&quot;,
+            &quot;reference&quot;: &quot;cliApp68400ed1b4b25-7544734744&quot;,
+            &quot;isCompleted&quot;: &quot;FAILED&quot;,
+            &quot;senderAccountName&quot;: &quot;John Obi&quot;,
+            &quot;senderAccountNumber&quot;: &quot;4574757787&quot;,
+            &quot;senderBankName&quot;: &quot;035&quot;
+        },
+        &quot;createdAt&quot;: &quot;2025-06-04T09:16:05.000000Z&quot;
+    }
 }</code>
  </pre>
     </span>
-<span id="execution-results-GETapi-v1-transactions--reference-" hidden>
+<span id="execution-results-GETapi-v1-transaction--reference-" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-transactions--reference-"></span>:
+                id="execution-response-status-GETapi-v1-transaction--reference-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-transactions--reference-"
+    <pre class="json"><code id="execution-response-content-GETapi-v1-transaction--reference-"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-transactions--reference-" hidden>
+<span id="execution-error-GETapi-v1-transaction--reference-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-transactions--reference-">
+    <pre><code id="execution-error-message-GETapi-v1-transaction--reference-">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-GETapi-v1-transactions--reference-" data-method="GET"
-      data-path="api/v1/transactions/{reference}"
+<form id="form-GETapi-v1-transaction--reference-" data-method="GET"
+      data-path="api/v1/transaction/{reference}"
       data-authed="0"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-transactions--reference-', this);">
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-transaction--reference-', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-transactions--reference-"
-                    onclick="tryItOut('GETapi-v1-transactions--reference-');">Try it out ⚡
+                    id="btn-tryout-GETapi-v1-transaction--reference-"
+                    onclick="tryItOut('GETapi-v1-transaction--reference-');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-transactions--reference-"
-                    onclick="cancelTryOut('GETapi-v1-transactions--reference-');" hidden>Cancel 🛑
+                    id="btn-canceltryout-GETapi-v1-transaction--reference-"
+                    onclick="cancelTryOut('GETapi-v1-transaction--reference-');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-transactions--reference-"
+                    id="btn-executetryout-GETapi-v1-transaction--reference-"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -1133,7 +1179,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-green">GET</small>
-            <b><code>api/v1/transactions/{reference}</code></b>
+            <b><code>api/v1/transaction/{reference}</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -1141,7 +1187,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-transactions--reference-"
+                              name="Content-Type"                data-endpoint="GETapi-v1-transaction--reference-"
                value="application/json"
                data-component="header">
     <br>
@@ -1152,7 +1198,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-transactions--reference-"
+                              name="Accept"                data-endpoint="GETapi-v1-transaction--reference-"
                value="application/json"
                data-component="header">
     <br>
@@ -1161,23 +1207,24 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>reference</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
+<small>string</small>&nbsp;
  &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="reference"                data-endpoint="GETapi-v1-transactions--reference-"
-               value="1"
+                <input type="text" style="display: none"
+                              name="reference"                data-endpoint="GETapi-v1-transaction--reference-"
+               value="cliApp68400ed1b4b25-7544734744"
                data-component="url">
     <br>
-<p>Example: <code>1</code></p>
+<p>The reference of the transaction. Example: <code>cliApp68400ed1b4b25-7544734744</code></p>
             </div>
                     </form>
 
-                    <h2 id="endpoints-GETapi-v1-transactions-user--account_ref-">GET api/v1/transactions/user/{account_ref}</h2>
+                    <h2 id="endpoints-GETapi-v1-transactions-user--account_ref-">Get all user transactions</h2>
 
 <p>
 </p>
 
-
+<p>Replace endpoint with the user's account ref. If everything is okay, you'll get a 200 OK response.</p>
+<p>Otherwise, the request will fail with an error, and a response listing the failed services.</p>
 
 <span id="example-requests-GETapi-v1-transactions-user--account_ref-">
 <blockquote>Example request:</blockquote>
@@ -1185,14 +1232,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/transactions/user/consequatur" \
+    --get "http://localhost/api/v1/transactions/user/cliApp68400ed1b4b25" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/transactions/user/consequatur"
+    "http://localhost/api/v1/transactions/user/cliApp68400ed1b4b25"
 );
 
 const headers = {
@@ -1209,19 +1256,50 @@ fetch(url, {
 
 <span id="example-responses-GETapi-v1-transactions-user--account_ref-">
             <blockquote>
-            <p>Example response (500):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Server Error&quot;
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Transaction(s) Fetched Successfully&quot;,
+    &quot;data&quot;: [
+        {
+            &quot;accountRef&quot;: &quot;cliApp68400ed1b4b25&quot;,
+            &quot;accountName&quot;: &quot;KIN&quot;,
+            &quot;accountNumber&quot;: 3396488285,
+            &quot;bankName&quot;: &quot;Wema bank&quot;,
+            &quot;transactionDetails&quot;: {
+                &quot;type&quot;: &quot;credit&quot;,
+                &quot;amount&quot;: &quot;100.00&quot;,
+                &quot;narration&quot;: &quot;Loan&quot;,
+                &quot;reference&quot;: &quot;cliApp68400ed1b4b25-7544734744&quot;,
+                &quot;isCompleted&quot;: &quot;FAILED&quot;,
+                &quot;senderAccountName&quot;: &quot;John Obi&quot;,
+                &quot;senderAccountNumber&quot;: &quot;4574757787&quot;,
+                &quot;senderBankName&quot;: &quot;035&quot;
+            },
+            &quot;createdAt&quot;: &quot;2025-06-04T09:16:05.000000Z&quot;
+        },
+        {
+            &quot;accountRef&quot;: &quot;cliApp68400ed1b4b25&quot;,
+            &quot;accountName&quot;: &quot;KIN&quot;,
+            &quot;accountNumber&quot;: 3396488285,
+            &quot;bankName&quot;: &quot;Wema bank&quot;,
+            &quot;transactionDetails&quot;: {
+                &quot;type&quot;: &quot;debit&quot;,
+                &quot;amount&quot;: &quot;2000.00&quot;,
+                &quot;totalFee&quot;: &quot;10.00&quot;,
+                &quot;narration&quot;: &quot;Gift&quot;,
+                &quot;reference&quot;: &quot;cliApp68400ed1b4b25-734373733733&quot;,
+                &quot;isCompleted&quot;: &quot;PAID&quot;,
+                &quot;receiverAccountName&quot;: &quot;IFEANYI OKPANKU&quot;,
+                &quot;receiverAccountNumber&quot;: &quot;0691571803&quot;,
+                &quot;receiverBankName&quot;: &quot;Access Bank&quot;
+            },
+            &quot;createdAt&quot;: &quot;2025-06-04T09:16:05.000000Z&quot;
+        }
+    ]
 }</code>
  </pre>
     </span>
@@ -1301,34 +1379,35 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="account_ref"                data-endpoint="GETapi-v1-transactions-user--account_ref-"
-               value="consequatur"
+               value="cliApp68400ed1b4b25"
                data-component="url">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>The user's account_ref. Example: <code>cliApp68400ed1b4b25</code></p>
             </div>
                     </form>
 
-                    <h2 id="endpoints-GETapi-v1-transactions-status--refernce-">GET api/v1/transactions/status/{refernce}</h2>
+                    <h2 id="endpoints-GETapi-v1-transaction-status--reference-">Get transaction status</h2>
 
 <p>
 </p>
 
+<p>Replace endpoint with the transaction reference. If everything is okay, you'll get a 200 OK response.</p>
+<p>Otherwise, the request will fail with an error, and a response listing the failed services.</p>
 
-
-<span id="example-requests-GETapi-v1-transactions-status--refernce-">
+<span id="example-requests-GETapi-v1-transaction-status--reference-">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/transactions/status/consequatur" \
+    --get "http://localhost/api/v1/transaction/status/MNFY|02|20250704161048|000089" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/transactions/status/consequatur"
+    "http://localhost/api/v1/transaction/status/MNFY|02|20250704161048|000089"
 );
 
 const headers = {
@@ -1343,62 +1422,58 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-GETapi-v1-transactions-status--refernce-">
+<span id="example-responses-GETapi-v1-transaction-status--reference-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;status&quot;: &quot;error&quot;,
-    &quot;message&quot;: &quot;Transaction Reference Not Found&quot;
+      &quot;status&quot;: &quot;success&quot;,
+      &quot;message&quot;: &quot;Transaction Status Fetched Successfully&quot;,
+      &quot;data&quot;: {
+           &quot;isCompleted&quot;: &quot;PAID&quot;,
+      }
 }</code>
  </pre>
     </span>
-<span id="execution-results-GETapi-v1-transactions-status--refernce-" hidden>
+<span id="execution-results-GETapi-v1-transaction-status--reference-" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-transactions-status--refernce-"></span>:
+                id="execution-response-status-GETapi-v1-transaction-status--reference-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-transactions-status--refernce-"
+    <pre class="json"><code id="execution-response-content-GETapi-v1-transaction-status--reference-"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-transactions-status--refernce-" hidden>
+<span id="execution-error-GETapi-v1-transaction-status--reference-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-transactions-status--refernce-">
+    <pre><code id="execution-error-message-GETapi-v1-transaction-status--reference-">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-GETapi-v1-transactions-status--refernce-" data-method="GET"
-      data-path="api/v1/transactions/status/{refernce}"
+<form id="form-GETapi-v1-transaction-status--reference-" data-method="GET"
+      data-path="api/v1/transaction/status/{reference}"
       data-authed="0"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-transactions-status--refernce-', this);">
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-transaction-status--reference-', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-transactions-status--refernce-"
-                    onclick="tryItOut('GETapi-v1-transactions-status--refernce-');">Try it out ⚡
+                    id="btn-tryout-GETapi-v1-transaction-status--reference-"
+                    onclick="tryItOut('GETapi-v1-transaction-status--reference-');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-transactions-status--refernce-"
-                    onclick="cancelTryOut('GETapi-v1-transactions-status--refernce-');" hidden>Cancel 🛑
+                    id="btn-canceltryout-GETapi-v1-transaction-status--reference-"
+                    onclick="cancelTryOut('GETapi-v1-transaction-status--reference-');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-transactions-status--refernce-"
+                    id="btn-executetryout-GETapi-v1-transaction-status--reference-"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -1406,7 +1481,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-green">GET</small>
-            <b><code>api/v1/transactions/status/{refernce}</code></b>
+            <b><code>api/v1/transaction/status/{reference}</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -1414,7 +1489,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-transactions-status--refernce-"
+                              name="Content-Type"                data-endpoint="GETapi-v1-transaction-status--reference-"
                value="application/json"
                data-component="header">
     <br>
@@ -1425,7 +1500,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-transactions-status--refernce-"
+                              name="Accept"                data-endpoint="GETapi-v1-transaction-status--reference-"
                value="application/json"
                data-component="header">
     <br>
@@ -1433,24 +1508,25 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>refernce</code></b>&nbsp;&nbsp;
+                <b style="line-height: 2;"><code>reference</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="refernce"                data-endpoint="GETapi-v1-transactions-status--refernce-"
-               value="consequatur"
+                              name="reference"                data-endpoint="GETapi-v1-transaction-status--reference-"
+               value="MNFY|02|20250704161048|000089"
                data-component="url">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>The reference of the transaction. Example: <code>MNFY|02|20250704161048|000089</code></p>
             </div>
                     </form>
 
-                    <h2 id="endpoints-POSTapi-v1-disburse-funds">POST api/v1/disburse-funds</h2>
+                    <h2 id="endpoints-POSTapi-v1-disburse-funds">Disburse(withdraw) funds.</h2>
 
 <p>
 </p>
 
-
+<p>Send the required parameters as JSON. If everything is okay, you'll get a 201 Created response.</p>
+<p>Otherwise, the request will fail with an error, and a response listing the failed services.</p>
 
 <span id="example-requests-POSTapi-v1-disburse-funds">
 <blockquote>Example request:</blockquote>
@@ -1462,10 +1538,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"accountRef\": \"consequatur\",
-    \"amount\": \"2.77\",
-    \"destinationBankCode\": 11613.31890586,
-    \"destinationAccountNumber\": 11613.31890586
+    \"accountRef\": \"cliApp68400ed1b4b25\",
+    \"amount\": 2000,
+    \"narration\": \"This is a gift money withdrawal\",
+    \"destinationBankCode\": 44,
+    \"destinationAccountNumber\": 69157103
 }"
 </code></pre></div>
 
@@ -1481,10 +1558,11 @@ const headers = {
 };
 
 let body = {
-    "accountRef": "consequatur",
-    "amount": "2.77",
-    "destinationBankCode": 11613.31890586,
-    "destinationAccountNumber": 11613.31890586
+    "accountRef": "cliApp68400ed1b4b25",
+    "amount": 2000,
+    "narration": "This is a gift money withdrawal",
+    "destinationBankCode": 44,
+    "destinationAccountNumber": 69157103
 };
 
 fetch(url, {
@@ -1496,7 +1574,27 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-v1-disburse-funds">
-</span>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+      &quot;status&quot;: &quot;success&quot;,
+      &quot;message&quot;: &quot;Funds Successfully Disbursed&quot;,
+      &quot;data&quot;: {
+          &quot;amount&quot;: 350,,
+          &quot;reference&quot;: &quot;cliApp6867b27d3a2c3-1751707790&quot;,
+          &quot;status&quot;: &quot;PENDING_AUTHORIZATION&quot;,
+          &quot;dateCreated&quot;: &quot;2025-07-05T09:29:51.274+00:00&quot;,
+          &quot;totalFee&quot;: 35,
+          &quot;destinationBankName&quot;: &quot;Access bank&quot;,
+          &quot;destinationAccountNumber&quot;: &quot;0691571803&quot;,
+          &quot;destinationBankCode&quot;: &quot;044&quot;
+      }
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-v1-disburse-funds" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-disburse-funds"></span>:
@@ -1573,10 +1671,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="accountRef"                data-endpoint="POSTapi-v1-disburse-funds"
-               value="consequatur"
+               value="cliApp68400ed1b4b25"
                data-component="body">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>cliApp68400ed1b4b25</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>amount</code></b>&nbsp;&nbsp;
@@ -1584,10 +1682,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="amount"                data-endpoint="POSTapi-v1-disburse-funds"
-               value="2.77"
+               value="2000"
                data-component="body">
     <br>
-<p>Must match the regex /^\d+(.\d{1,2})?$/. Example: <code>2.77</code></p>
+<p>Must match the regex /^\d+(.\d{1,2})?$/. Example: <code>2000</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>narration</code></b>&nbsp;&nbsp;
@@ -1595,10 +1693,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="narration"                data-endpoint="POSTapi-v1-disburse-funds"
-               value=""
+               value="This is a gift money withdrawal"
                data-component="body">
     <br>
-
+<p>Example: <code>This is a gift money withdrawal</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>destinationBankCode</code></b>&nbsp;&nbsp;
@@ -1606,10 +1704,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="destinationBankCode"                data-endpoint="POSTapi-v1-disburse-funds"
-               value="11613.31890586"
+               value="44"
                data-component="body">
     <br>
-<p>Example: <code>11613.31890586</code></p>
+<p>Example: <code>44</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>destinationAccountNumber</code></b>&nbsp;&nbsp;
@@ -1617,19 +1715,154 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="destinationAccountNumber"                data-endpoint="POSTapi-v1-disburse-funds"
-               value="11613.31890586"
+               value="69157103"
                data-component="body">
     <br>
-<p>Example: <code>11613.31890586</code></p>
+<p>Example: <code>69157103</code></p>
         </div>
         </form>
 
-                    <h2 id="endpoints-POSTapi-v1-pay-online">POST api/v1/pay-online</h2>
+                    <h2 id="endpoints-GETapi-v1-disburse-funds-status--reference-">Get disburse transaction status</h2>
 
 <p>
 </p>
 
+<p>Replace endpoint with the disburse transaction reference. If everything is okay, you'll get a 200 OK response.</p>
+<p>Otherwise, the request will fail with an error, and a response listing the failed services.</p>
 
+<span id="example-requests-GETapi-v1-disburse-funds-status--reference-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/api/v1/disburse-funds/status/cliApp68400ed1b4b25-7544734744" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/v1/disburse-funds/status/cliApp68400ed1b4b25-7544734744"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-disburse-funds-status--reference-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+      &quot;status&quot;: &quot;success&quot;,
+      &quot;message&quot;: &quot;Transaction Status Fetched Successfully&quot;,
+      &quot;data&quot;: {
+           &quot;isCompleted&quot;: &quot;PAID&quot;,
+      }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-disburse-funds-status--reference-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-disburse-funds-status--reference-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-disburse-funds-status--reference-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-disburse-funds-status--reference-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-disburse-funds-status--reference-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-disburse-funds-status--reference-" data-method="GET"
+      data-path="api/v1/disburse-funds/status/{reference}"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-disburse-funds-status--reference-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-disburse-funds-status--reference-"
+                    onclick="tryItOut('GETapi-v1-disburse-funds-status--reference-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-disburse-funds-status--reference-"
+                    onclick="cancelTryOut('GETapi-v1-disburse-funds-status--reference-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-disburse-funds-status--reference-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/disburse-funds/status/{reference}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v1-disburse-funds-status--reference-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v1-disburse-funds-status--reference-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>reference</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="reference"                data-endpoint="GETapi-v1-disburse-funds-status--reference-"
+               value="cliApp68400ed1b4b25-7544734744"
+               data-component="url">
+    <br>
+<p>The reference of the disburse transaction. Example: <code>cliApp68400ed1b4b25-7544734744</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-POSTapi-v1-pay-online">Topup with card.</h2>
+
+<p>
+</p>
+
+<p>Send the required parameters as JSON. If everything is okay, you'll get a 200 OK response.</p>
+<p>Then redirect user to the checkout URL to complete payment.</p>
 
 <span id="example-requests-POSTapi-v1-pay-online">
 <blockquote>Example request:</blockquote>
@@ -1641,8 +1874,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"accountRef\": \"consequatur\",
-    \"amount\": \"2.77\"
+    \"accountRef\": \"cliApp68400ed1b4b25\",
+    \"amount\": 2000,
+    \"description\": \"This is a gift money deposit\"
 }"
 </code></pre></div>
 
@@ -1658,8 +1892,9 @@ const headers = {
 };
 
 let body = {
-    "accountRef": "consequatur",
-    "amount": "2.77"
+    "accountRef": "cliApp68400ed1b4b25",
+    "amount": 2000,
+    "description": "This is a gift money deposit"
 };
 
 fetch(url, {
@@ -1671,7 +1906,20 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-v1-pay-online">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+      &quot;status&quot;: &quot;success&quot;,
+      &quot;message&quot;: &quot;Successful, Redirect To Checkout&quot;,
+      &quot;data&quot;: {
+          &quot;checkoutURL&quot;: &quot;https://sandbox.sdk.monnify.com/checkout/MNFY|08|20250705105040|000183&quot;,
+      }
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-v1-pay-online" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-pay-online"></span>:
@@ -1748,10 +1996,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="accountRef"                data-endpoint="POSTapi-v1-pay-online"
-               value="consequatur"
+               value="cliApp68400ed1b4b25"
                data-component="body">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>cliApp68400ed1b4b25</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>amount</code></b>&nbsp;&nbsp;
@@ -1759,10 +2007,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="amount"                data-endpoint="POSTapi-v1-pay-online"
-               value="2.77"
+               value="2000"
                data-component="body">
     <br>
-<p>Must match the regex /^\d+(.\d{1,2})?$/. Example: <code>2.77</code></p>
+<p>Must match the regex /^\d+(.\d{1,2})?$/. Example: <code>2000</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
@@ -1770,19 +2018,20 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="description"                data-endpoint="POSTapi-v1-pay-online"
-               value=""
+               value="This is a gift money deposit"
                data-component="body">
     <br>
-
+<p>Example: <code>This is a gift money deposit</code></p>
         </div>
         </form>
 
-                    <h2 id="endpoints-POSTapi-v1-webhook-credit">POST api/v1/webhook/credit</h2>
+                    <h2 id="endpoints-POSTapi-v1-webhook-credit">Received funds.</h2>
 
 <p>
 </p>
 
-
+<p>Notification is sent to this endpoint whenever a user receives a topup either by transfer or card. If everything is okay, you'll get a 201 Created response.</p>
+<p>Otherwise, the request will fail with an error, and a response listing the failed services.</p>
 
 <span id="example-requests-POSTapi-v1-webhook-credit">
 <blockquote>Example request:</blockquote>
@@ -1813,7 +2062,34 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-v1-webhook-credit">
-</span>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Account Credited N1000&quot;,
+    &quot;data&quot;: {
+        &quot;accountRef&quot;: &quot;cliApp68400ed1b4b25&quot;,
+        &quot;accountName&quot;: &quot;KIN&quot;,
+        &quot;accountNumber&quot;: 3396488285,
+        &quot;bankName&quot;: &quot;Wema bank&quot;,
+        &quot;transactionDetails&quot;: {
+            &quot;type&quot;: &quot;credit&quot;,
+            &quot;amount&quot;: &quot;1000.00&quot;,
+            &quot;narration&quot;: &quot;Loan&quot;,
+            &quot;reference&quot;: &quot;cliApp68400ed1b4b25-7544734744&quot;,
+            &quot;isCompleted&quot;: &quot;FAILED&quot;,
+            &quot;senderAccountName&quot;: &quot;John Obi&quot;,
+            &quot;senderAccountNumber&quot;: &quot;4574757787&quot;,
+            &quot;senderBankName&quot;: &quot;035&quot;
+        },
+        &quot;createdAt&quot;: &quot;2025-06-04T09:16:05.000000Z&quot;
+    }
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-v1-webhook-credit" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-webhook-credit"></span>:

@@ -16,6 +16,37 @@ class WebhookController extends Controller
 {
     use ApiResponseTrait;
 
+    /**
+    *   Received funds.
+    *
+    * Notification is sent to this endpoint whenever a user receives a topup either by transfer or card. If everything is okay, you'll get a 201 Created response.
+    *
+    * Otherwise, the request will fail with an error, and a response listing the failed services.
+    *
+    * @response 201 {
+    *       "status": "success",
+    *       "message": "Account Credited N1000",
+    *       "data": {
+    *               "accountRef": "cliApp68400ed1b4b25",
+    *               "accountName": "KIN",
+    *               "accountNumber": 3396488285,
+    *               "bankName": "Wema bank",
+    *               "transactionDetails": {
+    *                   "type": "credit",
+    *                   "amount": "1000.00",
+    *                   "narration": "Loan",
+    *                   "reference": "cliApp68400ed1b4b25-7544734744",
+    *                   "isCompleted": "FAILED",
+    *                   "senderAccountName": "John Obi",
+    *                   "senderAccountNumber": "4574757787",
+    *                   "senderBankName": "035"
+    *               },
+    *               "createdAt": "2025-06-04T09:16:05.000000Z"
+    *           }
+ * }
+
+    */
+
      public function handle(Request $request)
     {
         $ip = $request->ip(); // Laravel detects the real IP
@@ -94,7 +125,7 @@ class WebhookController extends Controller
             $deposit_detail->save();
         }
 
-        return $this->success(new TransactionResource($transaction), 'Account Credited N'.$amount, 200);
+        return $this->success(new TransactionResource($transaction), 'Account Credited N'.$amount, 201);
     }
 
     /* private function extractClientIdFromReference($reference): ?int

@@ -28,4 +28,28 @@ class PayRequest extends FormRequest
             'description' => 'nullable'
         ];
     }
+    /**
+    * Get the body parameters for the request.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'accountRef' => [
+                'type' => 'string',
+                'required' => true,
+                'example' => 'cliApp68400ed1b4b25'
+            ],
+            'amount' => [
+                'type' => 'float',
+                'required' => true,
+                'example' => 2000.00
+            ],
+            'description' => [
+                'required' => false,
+                'example' => 'This is a gift money deposit'
+            ],
+        ];
+    }
 }
