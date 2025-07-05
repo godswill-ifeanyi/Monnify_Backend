@@ -222,7 +222,7 @@ class MonnifyService
             return $result;
         }
 
-        $reference = $user->account_ref . now()->timestamp;
+        $reference = $user->account_ref ."-". now()->timestamp;
 
         $payload = [
             "amount" => $amount,

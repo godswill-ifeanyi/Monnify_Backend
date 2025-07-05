@@ -5,6 +5,68 @@ description: ''
 endpoints:
   -
     httpMethods:
+      - GET
+    uri: 'api/v1/account-details/admin/{account_number}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get admin details'
+      description: |-
+        Replace endpoint with the admin account number. If everything is okay, you'll get a 200 OK response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      account_number:
+        name: account_number
+        description: 'The account_number of the main monnify account.'
+        required: true
+        example: '6318939922'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      account_number: '6318939922'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+                "status": "success",
+                "message": "Admin Account Fetched Successfully",
+                "data": {
+                    "accountName": "Test Account",
+                    "accountNumber": "6318939922",
+                    "accountBalance": {
+                        "availableBalance": 4999997000,
+                        "ledgerBalance": 4999997000
+                    }
+                }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
       - POST
     uri: api/v1/create-account
     metadata:
@@ -13,7 +75,10 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Create a reserved bank account.'
-      description: ''
+      description: |-
+        Send the required parameters as JSON. If the NIN is valid and everything is okay, you'll get a 201 Created response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
       authenticated: false
       custom: []
     headers:
@@ -82,11 +147,79 @@ endpoints:
                     "chamberName": "John Doe & Sons Chambers",
                     "email": "john.doe@example.com",
                     "nin": 5767676767,
-                    "accountRef": "cliApp684404f8964ec",
                     "bankDetails": {
+                        "accountRef": "cliApp684404f8964ec",
                         "accountNumber": 3318057324,
                         "accountName": "JOHN DOE & SONS CHAMBERS",
-                        "bankName": "Wema bank"
+                        "bankName": "Wema bank",
+                        "accountBal": 0.00
+                    }
+                }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/account-details/{account_ref}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get user details'
+      description: |-
+        Replace endpoint with the user account ref. If everything is okay, you'll get a 200 OK response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      account_ref:
+        name: account_ref
+        description: "The account_ref of the user's monnify account."
+        required: true
+        example: cliApp684404f8964ec
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      account_ref: cliApp684404f8964ec
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+                "status": "success",
+                "message": "Reserved Account Fetched Successfully",
+                "data": {
+                    "name": "John Doe",
+                    "chamberName": "John Doe & Sons Chambers",
+                    "email": "john.doe@example.com",
+                    "nin": 5767676767,
+                    "bankDetails": {
+                        "accountRef": "cliApp684404f8964ec",
+                        "accountNumber": 3318057324,
+                        "accountName": "JOHN DOE & SONS CHAMBERS",
+                        "bankName": "Wema bank",
+                        "accountBal": 0.00
                     }
                 }
           }
@@ -109,7 +242,10 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Verify any bank account.'
-      description: ''
+      description: |-
+        Send the required parameters as JSON. If everything is okay, you'll get a 200 OK response.
+
+          Otherwise, the request will fail with an error, and a response listing the failed services.
       authenticated: false
       custom: []
     headers:
@@ -157,6 +293,264 @@ endpoints:
           }
         headers: []
         description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/get-banks
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Nigerian banks details'
+      description: |-
+        If everything is okay, you'll get a 200 OK response.
+
+        Otherwise, the request will fail with an error, and a response listing the failed services.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+                "status": "success",
+                "message": "Banks Details Fetched Successfully",
+                "data": [
+                            {
+                                "name": "9JAPAY MICROFINANCE BANK",
+                                "code": "090629",
+                                "ussdTemplate": null,
+                                "baseUssdCode": null,
+                                "transferUssdTemplate": null,
+                                "bankId": null,
+                                "nipBankCode": "090629"
+                            },
+                            {
+                                "name": "Access bank",
+                                "code": "044",
+                                "ussdTemplate": "*901*Amount*AccountNumber#",
+                                "baseUssdCode": "*901#",
+                                "transferUssdTemplate": "*901*AccountNumber#",
+                                "bankId": null,
+                                "nipBankCode": "000014"
+                            }
+                }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/transactions
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 500
+        content: |-
+          {
+              "message": "Server Error"
+          }
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/transactions/{reference}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      reference:
+        name: reference
+        description: ''
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      reference: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"status":"error","message":"Transaction Not Found"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/transactions/user/{account_ref}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      account_ref:
+        name: account_ref
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      account_ref: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 500
+        content: |-
+          {
+              "message": "Server Error"
+          }
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/transactions/status/{refernce}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      refernce:
+        name: refernce
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      refernce: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"status":"error","message":"Transaction Reference Not Found"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
         custom: []
     responseFields: []
     auth: []
@@ -240,6 +634,98 @@ endpoints:
       amount: '2.77'
       destinationBankCode: 11613.31890586
       destinationAccountNumber: 11613.31890586
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/pay-online
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      accountRef:
+        name: accountRef
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      amount:
+        name: amount
+        description: 'Must match the regex /^\d+(\.\d{1,2})?$/.'
+        required: true
+        example: '2.77'
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      accountRef: consequatur
+      amount: '2.77'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/webhook/credit
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses: []
     responseFields: []

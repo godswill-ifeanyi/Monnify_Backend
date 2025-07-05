@@ -16,8 +16,10 @@ class VirtualAccountController extends Controller
 /**
 *   Verify any bank account.
 *
+*   Send the required parameters as JSON. If everything is okay, you'll get a 200 OK response.
 *
-    * @response 200 {
+*   Otherwise, the request will fail with an error, and a response listing the failed services.
+*   @response 200 {
 *        "status": "success",
 *        "message": "Account Details Valid",
 *        "data": {
@@ -50,6 +52,40 @@ class VirtualAccountController extends Controller
         }
     }
 
+    /**
+    * Get Nigerian banks details
+    *
+    * If everything is okay, you'll get a 200 OK response.
+    *
+    * Otherwise, the request will fail with an error, and a response listing the failed services.
+    *
+    * @response 200 {
+    *       "status": "success",
+    *       "message": "Banks Details Fetched Successfully",
+    *       "data": [
+    *            {
+    *                "name": "9JAPAY MICROFINANCE BANK",
+    *                "code": "090629",
+    *                "ussdTemplate": null,
+    *                "baseUssdCode": null,
+    *                "transferUssdTemplate": null,
+    *                "bankId": null,
+    *                "nipBankCode": "090629"
+    *             },
+    *             {
+    *                 "name": "Access bank",
+    *                 "code": "044",
+    *                 "ussdTemplate": "*901*Amount*AccountNumber#",
+    *                 "baseUssdCode": "*901#",
+    *                 "transferUssdTemplate": "*901*AccountNumber#",
+    *                 "bankId": null,
+    *                 "nipBankCode": "000014"
+    *              }
+    *       ]
+    * }
+
+     */
+
     public function get_banks() {
         $monnify = new MonnifyService();
         $response = $monnify->getBankAccounts();
@@ -60,7 +96,7 @@ class VirtualAccountController extends Controller
         else {
             if ($response["requestSuccessful"] == true) {
 
-                return $this->success($response["responseBody"], 'Bank Details Fetched Successfully', 200);
+                return $this->success($response["responseBody"], 'Banks Details Fetched Successfully', 200);
             }
             else {
                 return $this->error(ucwords($response["responseMessage"]), 404);

@@ -20,6 +20,29 @@ class AdminController extends Controller
         $this->mainAcctName = config('monnify.main_account_name');
     }
 
+    /**
+    * Get admin details
+    *
+    * Replace endpoint with the admin account number. If everything is okay, you'll get a 200 OK response.
+    *
+    * Otherwise, the request will fail with an error, and a response listing the failed services.
+    *
+    * @urlParam account_number string required The account_number of the main monnify account. Example: 6318939922
+    * @response 200 {
+    *       "status": "success",
+    *       "message": "Admin Account Fetched Successfully",
+    *       "data": {
+    *           "accountName": "Test Account",
+    *           "accountNumber": "6318939922",
+    *           "accountBalance": {
+    *               "availableBalance": 4999997000,
+    *               "ledgerBalance": 4999997000
+    *           }
+    *       }
+    * }
+
+     */
+
     public function show($account_number) {
         $monnify = new MonnifyService();
         $account_details = $monnify->getAdminAccount($account_number);
@@ -37,6 +60,8 @@ class AdminController extends Controller
             }
             else {
                 $response = ucwords($account_details['responseMessage']);
+
+                return $this->error($response,  404);
             }
         }
 

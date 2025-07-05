@@ -24,7 +24,7 @@ class UserResource extends JsonResource
                 'accountNumber' => $this->virtualAccount->account_number,
                 'accountName' => $this->virtualAccount->account_name,
                 'bankName' => $this->virtualAccount->bank_name,
-                'accountBalance' => $this->virtualAccount->balance
+                'accountBal' => $this->virtualAccount->balance
             ],
         ];
     }

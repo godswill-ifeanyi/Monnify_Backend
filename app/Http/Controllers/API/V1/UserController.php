@@ -18,7 +18,10 @@ class UserController extends Controller
     /**
     *   Create a reserved bank account.
     *
-
+    * Send the required parameters as JSON. If the NIN is valid and everything is okay, you'll get a 201 Created response.
+    *
+    * Otherwise, the request will fail with an error, and a response listing the failed services.
+    *
     * @response 201 {
     *       "status": "success",
     *       "message": "Reserved Account Created Successfully",
@@ -27,11 +30,12 @@ class UserController extends Controller
     *           "chamberName": "John Doe & Sons Chambers",
     *           "email": "john.doe@example.com",
     *           "nin": 5767676767,
-    *           "accountRef": "cliApp684404f8964ec",
     *           "bankDetails": {
+    *               "accountRef": "cliApp684404f8964ec",
     *               "accountNumber": 3318057324,
     *               "accountName": "JOHN DOE & SONS CHAMBERS",
-    *               "bankName": "Wema bank"
+    *               "bankName": "Wema bank",
+    *               "accountBal": 0.00 
     *           }
     *       }
  * }
@@ -75,6 +79,34 @@ class UserController extends Controller
 
         return $this->success(new UserResource($user), 'Reserved Account Created Successfully', 201);
     }
+
+    /**
+    * Get user details
+    *
+    * Replace endpoint with the user account ref. If everything is okay, you'll get a 200 OK response.
+    *
+    * Otherwise, the request will fail with an error, and a response listing the failed services.
+    *
+    * @urlParam account_ref string required The account_ref of the user's monnify account. Example: cliApp684404f8964ec
+    * @response 200 {
+    *       "status": "success",
+    *       "message": "Reserved Account Fetched Successfully",
+    *       "data": {
+    *           "name": "John Doe",
+    *           "chamberName": "John Doe & Sons Chambers",
+    *           "email": "john.doe@example.com",
+    *           "nin": 5767676767,
+    *           "bankDetails": {
+    *               "accountRef": "cliApp684404f8964ec",
+    *               "accountNumber": 3318057324,
+    *               "accountName": "JOHN DOE & SONS CHAMBERS",
+    *               "bankName": "Wema bank",
+    *               "accountBal": 0.00 
+    *           }
+    *       }
+    * }
+
+     */
 
     public function show($account_ref) {
         $user = User::where('account_ref', $account_ref)->first();

@@ -16,6 +16,57 @@ class TransactionController extends Controller
 {
     use ApiResponseTrait;
 
+    /**
+    * Get all transactions
+    *
+    * If everything is okay, you'll get a 200 OK response.
+    *
+    * Otherwise, the request will fail with an error, and a response listing the failed services.
+    *
+    * @response 200 {
+    *       "status": "success",
+    *       "message": "Transaction(s) Fetched Successfully",
+    *       "data": [
+    *           {
+    *               "accountRef": "cliApp68400ed1b4b25",
+    *               "accountName": "KIN",
+    *               "accountNumber": 3396488285,
+    *               "bankName": "Wema bank",
+    *               "transactionDetails": {
+    *                   "type": "credit",
+    *                   "amount": "100.00",
+    *                   "narration": "Loan",
+    *                   "reference": "cliApp68400ed1b4b25-7544734744",
+    *                   "isCompleted": "FAILED",
+    *                   "senderAccountName": "John Obi",
+    *                   "senderAccountNumber": "4574757787",
+    *                   "senderBankName": "035"
+    *               },
+    *               "createdAt": "2025-06-04T09:16:05.000000Z"
+    *           },
+    *           {
+    *               "accountRef": "cliApp68400ed1b4b25",
+    *               "accountName": "KIN",
+    *               "accountNumber": 3396488285,
+    *               "bankName": "Wema bank",
+    *               "transactionDetails": {
+    *                   "type": "debit",
+    *                   "amount": "2000.00",
+    *                   "totalFee": "10.00",
+    *                   "narration": "Gift",
+    *                   "reference": "cliApp68400ed1b4b25-734373733733",
+    *                   "isCompleted": "PAID",
+    *                   "receiverAccountName": "IFEANYI OKPANKU",
+    *                   "receiverAccountNumber": "0691571803",
+    *                   "receiverBankName": "Access Bank"
+    *               },
+    *               "createdAt": "2025-06-04T09:16:05.000000Z"
+    *           }
+    *       ]
+    * }
+
+     */
+
     public function show_all(Request $request) {
         $transactions = Transaction::latest('id')->get();
 
@@ -25,12 +76,15 @@ class TransactionController extends Controller
             });
         } */
 
-        $monnify = new MonnifyService();
-
         // Update Transaction Status
         foreach($transactions as $transaction) {
             if ($transaction->type == 'credit') {
+                $monnify = new MonnifyService();
                 $transaction_status = $monnify->getTransactionStatus($transaction->reference);
+
+                if ($transaction_status == null) {
+                    return $this->error('Something Went Wrong', 500);
+                }
 
                 if ($transaction_status['requestSuccessful'] == true) {
                     if ($transaction_status['paymentStatus'] != $transaction->is_completed) {
@@ -41,7 +95,11 @@ class TransactionController extends Controller
             }
             else if ($transaction->type == 'debit') {
                 $monnify = new MonnifyService();
-                $verify_disburse = $monnify->verifyDisbursement($disburse["reference"]);
+                $verify_disburse = $monnify->verifyDisbursement($transaction->reference);
+
+                if ($verify_disburse == null) {
+                    return $this->error('Something Went Wrong', 500);
+                }
 
                 if ($verify_disburse['requestSuccessful'] == true) {
                     if ($verify_disburse['status'] != $transaction->is_completed) {
@@ -55,6 +113,38 @@ class TransactionController extends Controller
         return $this->success(TransactionResource::collection($transactions), 'Transaction(s) Fetched Successfully', 200);
     }
 
+    /**
+    * Get one transaction
+    *
+    * Replace endpoint with the transaction reference. If everything is okay, you'll get a 200 OK response.
+    *
+    * Otherwise, the request will fail with an error, and a response listing the failed services.
+    *
+    * @urlParam reference string required The reference of the transaction. Example: cliApp68400ed1b4b25-7544734744
+    * @response 200 {
+    *       "status": "success",
+    *       "message": "Transaction Fetched Successfully",
+    *       "data": {
+    *            "accountRef": "cliApp68400ed1b4b25",
+    *            "accountName": "KIN",
+    *            "accountNumber": 3396488285,
+    *            "bankName": "Wema bank",
+    *            "transactionDetails": {
+    *                "type": "credit",
+    *                "amount": "100.00",
+    *                "narration": "Loan",
+    *                "reference": "cliApp68400ed1b4b25-7544734744",
+    *                "isCompleted": "FAILED",
+    *                "senderAccountName": "John Obi",
+    *                "senderAccountNumber": "4574757787",
+    *                "senderBankName": "035"
+    *            },
+    *            "createdAt": "2025-06-04T09:16:05.000000Z"
+    *        }
+    * }
+
+     */
+
     public function show_one($reference) {
         $transaction = Transaction::where('reference',$reference)->first();
 
@@ -66,6 +156,10 @@ class TransactionController extends Controller
 
         // Update Transaction Status
         $transaction_status = $monnify->getTransactionStatus($transaction->reference);
+
+        if ($transaction_status == null) {
+            return $this->error('Something Went Wrong', 500);
+        }
 
         if ($transaction_status['requestSuccessful'] == true) {
             if ($transaction_status['paymentStatus'] != $transaction->is_completed) {
@@ -79,22 +173,49 @@ class TransactionController extends Controller
 
     public function show_all_by_user($account_ref) {
         $user = User::where('account_ref', $account_ref)->first();
+
+        if (!$user) {
+            return $this->error('Account Not Found', 404);
+        }
+
         $transactions = Transaction::where('user_id',$user->id)->latest('id')->get();
 
         if (!$transactions) {
-            return $this->error('Transaction Not Found', 404);
+            return $this->error('User Transaction Not Found', 404);
         }
 
         $monnify = new MonnifyService();
 
         // Update Transaction Status
         foreach($transactions as $transaction) {
-            $transaction_status = $monnify->getTransactionStatus($transaction->reference);
+            if ($transaction->type == 'credit') {
+                $monnify = new MonnifyService();
+                $transaction_status = $monnify->getTransactionStatus($transaction->reference);
 
-            if ($transaction_status['requestSuccessful'] == true) {
-                if ($transaction_status['paymentStatus'] != $transaction->is_completed) {
-                    $transaction->is_completed = $transaction_status['paymentStatus'];
-                    $transaction->save();
+                if ($transaction_status == null) {
+                    return $this->error('Something Went Wrong', 500);
+                }
+
+                if ($transaction_status['requestSuccessful'] == true) {
+                    if ($transaction_status['paymentStatus'] != $transaction->is_completed) {
+                        $transaction->is_completed = $transaction_status['paymentStatus'];
+                        $transaction->save();
+                    }
+                }
+            }
+            else if ($transaction->type == 'debit') {
+                $monnify = new MonnifyService();
+                $verify_disburse = $monnify->verifyDisbursement($transaction->reference);
+
+                if ($verify_disburse == null) {
+                    return $this->error('Something Went Wrong', 500);
+                }
+
+                if ($verify_disburse['requestSuccessful'] == true) {
+                    if ($verify_disburse['status'] != $transaction->is_completed) {
+                        $transaction->is_completed = $verify_disburse['status'];
+                        $transaction->save();
+                    }
                 }
             }
         }
