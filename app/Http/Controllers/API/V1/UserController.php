@@ -111,6 +111,10 @@ class UserController extends Controller
     public function show($account_ref) {
         $user = User::where('account_ref', $account_ref)->first();
 
+        if (!$user) {
+            return $this->error('Account Not Found',  404);
+        }
+
         return $this->success(new UserResource($user), 'Reserved Account Fetched Successfully', 200);
     }
 }
