@@ -23,11 +23,10 @@ class AdminController extends Controller
     /**
     * Get admin details
     *
-    * Replace endpoint with the admin account number. If everything is okay, you'll get a 200 OK response.
+    * If everything is okay, you'll get a 200 OK response.
     *
     * Otherwise, the request will fail with an error, and a response listing the failed services.
     *
-    * @urlParam account_number string required The account_number of the main monnify account. Example: 6318939922
     * @response 200 {
     *       "status": "success",
     *       "message": "Admin Account Fetched Successfully",
@@ -43,9 +42,9 @@ class AdminController extends Controller
 
      */
 
-    public function show($account_number) {
+    public function show() {
         $monnify = new MonnifyService();
-        $account_details = $monnify->getAdminAccount($account_number);
+        $account_details = $monnify->getAdminAccount();
 
         if ($account_details == null) {
             return $this->error('Something Went Wrong', 500);

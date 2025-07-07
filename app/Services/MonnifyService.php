@@ -74,14 +74,14 @@ class MonnifyService
         return $result ?? null;
     }
 
-    public function getAdminAccount($accountNumber)
+    public function getAdminAccount()
     {
         $accessToken = $this->authenticate();
         if (!$accessToken) return null;
 
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL, "$this->baseUrl/api/v2/disbursements/wallet-balance?accountNumber=$accountNumber");
+        curl_setopt($curl, CURLOPT_URL, "$this->baseUrl/api/v2/disbursements/wallet-balance?accountNumber=$this->mainAcctNumber");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER,[
             "Authorization: Bearer $accessToken",

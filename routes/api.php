@@ -11,7 +11,7 @@ use App\Http\Controllers\API\V1\VirtualAccountController;
 
 Route::prefix('v1')->group(function() {
     // Admin Monnify Account
-    Route::get('/account-details/admin/{account_number}', [AdminController::class, 'show']);
+    Route::get('/account-details/admin', [AdminController::class, 'show']);
 
     // Create Account
     Route::post('/create-account', [UserController::class, 'create']);
