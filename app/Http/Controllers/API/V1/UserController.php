@@ -35,7 +35,7 @@ class UserController extends Controller
     *               "accountNumber": 3318057324,
     *               "accountName": "JOHN DOE & SONS CHAMBERS",
     *               "bankName": "Wema bank",
-    *               "accountBal": 0.00 
+    *               "accountBal": 0.00
     *           }
     *       }
  * }
@@ -80,8 +80,56 @@ class UserController extends Controller
         return $this->success(new UserResource($user), 'Reserved Account Created Successfully', 201);
     }
 
+        /**
+    * Get all users details
+    *
+    * If everything is okay, you'll get a 200 OK response.
+    *
+    * Otherwise, the request will fail with an error, and a response listing the failed services.
+    *
+    * @response 200 {
+    *       "status": "success",
+    *       "message": "All Users Reserved Account Fetched Successfully",
+    *       "data": [
+    *          {
+    *           "name": "John Doe",
+    *           "chamberName": "John Doe & Sons Chambers",
+    *           "email": "john.doe@example.com",
+    *           "nin": 5767676767,
+    *           "bankDetails": {
+    *               "accountRef": "cliApp684404f8964ec",
+    *               "accountNumber": 3318057324,
+    *               "accountName": "JOHN DOE & SONS CHAMBERS",
+    *               "bankName": "Wema bank",
+    *               "accountBal": 0.00
+    *           }
+    *       },
+    *          {
+    *           "name": "Jane Jack",
+    *           "chamberName": "Jane Jack Chambers",
+    *           "email": "janejack@example.com",
+    *           "nin": 5878787875,
+    *           "bankDetails": {
+    *               "accountRef": "cliApp686404g896gh",
+    *               "accountNumber": 3318049324,
+    *               "accountName": "JANE JACK CHAMBERS",
+    *               "bankName": "Wema bank",
+    *               "accountBal": 0.00
+    *           }
+    *       }
+    *    ]
+    * }
+
+     */
+
+    public function index() {
+        $users = User::latest('id')->get();
+
+        return $this->success(UserResource::collection($users), 'All Users Reserved Account Fetched Successfully', 200);
+    }
+
     /**
-    * Get user details
+    * Get one user details
     *
     * Replace endpoint with the user account ref. If everything is okay, you'll get a 200 OK response.
     *
@@ -101,7 +149,7 @@ class UserController extends Controller
     *               "accountNumber": 3318057324,
     *               "accountName": "JOHN DOE & SONS CHAMBERS",
     *               "bankName": "Wema bank",
-    *               "accountBal": 0.00 
+    *               "accountBal": 0.00
     *           }
     *       }
     * }

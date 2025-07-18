@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function() {
 
     // Create Account
     Route::post('/create-account', [UserController::class, 'create']);
+    Route::get('/account-details/users', [UserController::class, 'index']);
     Route::get('/account-details/{account_ref}', [UserController::class, 'show']);
 
     // Operations on Virtual Account
@@ -33,6 +34,6 @@ Route::prefix('v1')->group(function() {
     Route::post('/pay-online', [TransactionController::class, 'pay']);
 
     // Webhook
-    Route::get('/webhook/credit', [WebhookController::class, 'handle']);
+    Route::post('/webhook/credit', [WebhookController::class, 'handle']);
 
 });
