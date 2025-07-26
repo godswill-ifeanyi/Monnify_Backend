@@ -135,7 +135,7 @@ class WebhookController extends Controller
             return $this->error('No Recent Transaction', 404);
         }
 
-        $this->success(new TransactionResource($transaction), 'Account Credited N'.$amount, 201);
+        $this->success(new TransactionResource($transaction), 'Account Credited N', 201);
     }
 
     /* private function extractClientIdFromReference($reference): ?int
