@@ -34,6 +34,6 @@ Route::prefix('v1')->group(function() {
     Route::post('/pay-online', [TransactionController::class, 'pay']);
 
     // Webhook
-    Route::match(['get', 'post'],'/webhook/credit', [WebhookController::class, 'handle']);
+    Route::post('/webhook/credit', [WebhookController::class, 'handle']);
 
 });
