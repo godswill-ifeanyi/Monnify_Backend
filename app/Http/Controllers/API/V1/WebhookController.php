@@ -57,7 +57,7 @@ class WebhookController extends Controller
 
         if (!in_array($ip, $allowedIPs)) {
             return $this->error('Unauthorized IP', 403);
-        } 
+        }
         // Step 1: Verify Signature
         $payload = $request->getContent();
         $signature = $request->header('monnify-signature');
@@ -130,6 +130,10 @@ class WebhookController extends Controller
 
     public function get_credit() {
         $transaction = $this->handle();
+
+        if (!$transaction) {
+            return $this->error('No Recent Transaction', 404);
+        }
 
         $this->success(new TransactionResource($transaction), 'Account Credited N'.$amount, 201);
     }
