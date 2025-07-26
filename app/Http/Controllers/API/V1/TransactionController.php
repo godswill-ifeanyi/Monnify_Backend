@@ -427,6 +427,6 @@ class TransactionController extends Controller
         $monnify = new MonnifyService();
         $deposit = $monnify->depositToClient($user, $data['amount'], $data['description'] ?? null);
 
-        return $this->success(['checkoutURL' => $deposit['responseBody']['checkoutUrl']], 'Disburse Status Fetched Successfully', 200);
+        return $this->success(['checkoutURL' => $deposit['responseBody']['checkoutUrl']], 'Successful, Proceed To Checkout', 200);
     }
 }

@@ -35,5 +35,6 @@ Route::prefix('v1')->group(function() {
 
     // Webhook
     Route::post('/webhook/credit', [WebhookController::class, 'handle']);
+    Route::get('/get-credit', [WebhookController::class, 'get_credit']);
 
 });
