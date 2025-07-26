@@ -129,7 +129,7 @@ class WebhookController extends Controller
     }
 
     public function get_credit() {
-        $transaction = $this->handle();
+        $transaction = $this->handle(Request::capture());
 
         if (!$transaction) {
             return $this->error('No Recent Transaction', 404);
