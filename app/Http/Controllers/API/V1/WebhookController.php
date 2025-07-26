@@ -125,7 +125,7 @@ class WebhookController extends Controller
             $deposit_detail->save();
         }
 
-        return $transaction;
+        return $transaction ?? null;
     }
 
     public function get_credit() {
