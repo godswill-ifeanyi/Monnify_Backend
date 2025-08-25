@@ -1,28 +1,29 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs; 
 
-use App\Models\VirtualAccount;
 use App\Models\Transaction;
+use App\Models\DepositDetail;
 use Illuminate\Bus\Queueable;
+use App\Models\VirtualAccount;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class ProcessMonnifyWebhook implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $payload;
+    protected $data; 
 
     /**
      * Create a new job instance.
      */
-    public function __construct(array $payload)
+    public function __construct(array $data)
     {
-        $this->payload = $payload;
+        $this->data = $data;
     }
 
     /**
@@ -30,13 +31,18 @@ class ProcessMonnifyWebhook implements ShouldQueue
      */
     public function handle(): void
     {
-        $accountReference = $this->payload['eventData']['product']['reference'] ?? null;
-        $amountPaid = $this->payload['eventData']['amountPaid'] ?? 0;
+        if ($data['product']['type'] == 'RESERVED_ACCOUNT'){
+            $accountReference = $data['product']['reference'];
+        }
+        else if ($data['product']['type'] == 'WEB_SDK') {
+            $accountReference = substr($data['product']['reference'],0,19);
+        }
+        $amountPaid = $data['amountPaid'];
 
-        $virtualAccount = virtualAccount::where('virtual_account_reference', $accountReference)->first();
-
-        if (!$virtualAccount) {
-            Log::warning("Webhook received for unknown account", ['reference' => $accountReference]);
+        $user = User::where('account_ref', $accountReference)->first();
+        if ($user) {
+            $virtualAccount = VirtualAccount::where('user_id', $user->id)->first();
+        } else {
             return;
         }
 
@@ -48,12 +54,13 @@ class ProcessMonnifyWebhook implements ShouldQueue
             $virtualAccount->decrement('arrears', $deduction);
 
             Transaction::create([
-                'client_id' => $virtualAccount->client_id,
+                'user_id' => $virtualAccount->user_id,
+                'virtual_account_id' => $virtualAccount->id,
                 'amount' => $deduction,
                 'type' => 'debit',
-                'reference' => 'ARREARS-CLEAR-' . uniqid(),
-                'narration' => 'Auto arrears deduction from deposit',
-                'status' => 'successful',
+                'reference' => 'MONTHLY-FEE-' . now()->format('Ym') . '-' . $virtualAccount->user->account_ref,
+                'narration' => 'Monthly Fee Deduction',
+                'is_completed' => $amountPaid >= $arrears ? 'PAID' : 'PARTIALLY',
             ]);
         }
 
@@ -62,21 +69,32 @@ class ProcessMonnifyWebhook implements ShouldQueue
         if ($remaining > 0) {
             $virtualAccount->increment('balance', $remaining);
 
-            Transaction::create([
-                'client_id' => $virtualAccount->client_id,
-                'amount' => $remaining,
-                'type' => 'credit',
-                'reference' => $this->payload['eventData']['transactionReference'] ?? uniqid(),
-                'narration' => 'Deposit via Monnify',
-                'status' => 'successful',
-            ]);
-        }
+            $transaction = new Transaction;
+            $transaction->user_id = $user->id;
+            $transaction->virtual_account_id = $virtualAccount->id;
+            $transaction->amount = $amountPaid;
+            $transaction->type = 'credit';
+            $transaction->reference = $data['transactionReference'];
+            $transaction->narration = $data['paymentDescription'] ?? '';
+            $transaction->is_completed = $data['paymentStatus'];
+            $transaction->save();
 
-        Log::info("Monnify deposit processed", [
-            'virtual_account_id' => $virtualAccount->id,
-            'paid' => $amountPaid,
-            'arrears_cleared' => $deduction,
-            'balance_added' => $remaining
-        ]);
+            if ($data['paymentMethod'] == 'ACCOUNT_TRANSFER') {
+                $deposit_detail = new DepositDetail;
+                $deposit_detail->transaction_id = $transaction->id;
+                $deposit_detail->sender_account_name = $data['paymentSourceInformation'][0]['accountName'];
+                $deposit_detail->sender_account_number = $data['paymentSourceInformation'][0]['accountNumber'];
+                $deposit_detail->sender_bank_code = $data['paymentSourceInformation'][0]['bankCode'];
+                $deposit_detail->save();
+            }
+            else if ($data['paymentMethod'] == 'CARD') {
+                $deposit_detail = new DepositDetail;
+                $deposit_detail->transaction_id = $transaction->id;
+                $deposit_detail->sender_account_name = "CARD";
+                $deposit_detail->sender_account_number = "CARD";
+                $deposit_detail->sender_bank_code = "CARD";
+                $deposit_detail->save();
+            }
+        }
     }
 }

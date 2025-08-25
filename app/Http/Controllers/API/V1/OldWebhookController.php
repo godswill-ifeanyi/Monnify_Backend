@@ -9,7 +9,6 @@ use App\Models\DepositDetail;
 use App\Models\VirtualAccount;
 use App\Services\MonnifyService;
 use App\Traits\ApiResponseTrait;
-use App\Jobs\ProcessMonnifyWebhook;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 
@@ -72,37 +71,58 @@ class WebhookController extends Controller
             return $this->error('Signature Invalid', 403);
         }
 
-        // Process only successful transactions
-        if (($request->eventType ?? '') == 'SUCCESSFUL_TRANSACTION') {
-            $data = $request->json('eventData');
+        $data = $request->json('eventData');
 
-            // Step 2: Check if transaction already exists
-            if (Transaction::where('reference', $data['transactionReference'])->exists()) {
-                return $this->error('Duplicate Transaction', 409);
-            }
+        // Step 2: Check if transaction already exists
+        if (Transaction::where('reference', $data['transactionReference'])->exists()) {
+            return $this->error('Duplicate Transaction', 409);
+        }
 
-            // Step 3: Credit client’s virtual account
-            if ($data['product']['type'] == 'RESERVED_ACCOUNT'){
-                $accountReference = $data['product']['reference'];
-            }
-            else if ($data['product']['type'] == 'WEB_SDK') {
-                $accountReference = substr($data['product']['reference'],0,19);
-            }
-            $amount = $data['amountPaid'];
+        // Step 3: Credit client’s virtual account
+        if ($data['product']['type'] == 'RESERVED_ACCOUNT'){
+            $accountReference = $data['product']['reference'];
+        }
+        else if ($data['product']['type'] == 'WEB_SDK') {
+            $accountReference = substr($data['product']['reference'],0,19);
+        }
+        $amount = $data['amountPaid'];
 
-            $user = User::where('account_ref', $accountReference)->first();
-            if ($user) {
-                $virtualAccount = VirtualAccount::where('user_id', $user->id)->first();
-            }
-            else {
-                return $this->error('Account Not Found', 404);
-            }
-
-            // Dispatch job to queue
-            ProcessMonnifyWebhook::dispatch($data);
+        $user = User::where('account_ref', $accountReference)->first();
+        if ($user) {
+            $virtualAccount = VirtualAccount::where('user_id', $user->id)->first();
         }
         else {
-            return $this->error('Event Type Not Supported', 400);
+            return $this->error('Account Not Found', 404);
+        }
+
+        // Step 4: Update balance and log transaction
+        $virtualAccount->increment('balance', $amount);
+
+        $transaction = new Transaction;
+        $transaction->user_id = $user->id;
+        $transaction->virtual_account_id = $virtualAccount->id;
+        $transaction->amount = $amount;
+        $transaction->type = 'credit';
+        $transaction->reference = $data['transactionReference'];
+        $transaction->narration = $data['paymentDescription'] ?? '';
+        $transaction->is_completed = $data['paymentStatus'];
+        $transaction->save();
+
+        if ($data['paymentMethod'] == 'ACCOUNT_TRANSFER') {
+            $deposit_detail = new DepositDetail;
+            $deposit_detail->transaction_id = $transaction->id;
+            $deposit_detail->sender_account_name = $data['paymentSourceInformation'][0]['accountName'];
+            $deposit_detail->sender_account_number = $data['paymentSourceInformation'][0]['accountNumber'];
+            $deposit_detail->sender_bank_code = $data['paymentSourceInformation'][0]['bankCode'];
+            $deposit_detail->save();
+        }
+        else if ($data['paymentMethod'] == 'CARD') {
+            $deposit_detail = new DepositDetail;
+            $deposit_detail->transaction_id = $transaction->id;
+            $deposit_detail->sender_account_name = "CARD";
+            $deposit_detail->sender_account_number = "CARD";
+            $deposit_detail->sender_bank_code = "CARD";
+            $deposit_detail->save();
         }
 
         return $this->success(new TransactionResource($transaction), 'Account Credited N'.$amount, 201);

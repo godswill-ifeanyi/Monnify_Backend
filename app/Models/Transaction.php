@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     protected $fillable = [
-        'user_id', 'virtual_account_id', 'type', 'amount', 'reference', 'narration',
+        'user_id', 'virtual_account_id', 'type', 'amount', 'reference', 'narration', 'is_completed'
     ];
 
     public function user()

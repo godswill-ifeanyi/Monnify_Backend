@@ -12,6 +12,6 @@ class VirtualAccount extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'client_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

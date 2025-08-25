@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-/* use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable; */
+
 use App\Models\VirtualAccount;
 use App\Models\Transaction;
 use App\Models\MonthlyFee;
@@ -21,10 +20,10 @@ class DeductMonthlyFee implements ShouldQueue
     protected $virtualAccount;
     protected $monthlyFee;
 
-    public function __construct(VirtualAccount $virtualAccount)
+    public function __construct(VirtualAccount $virtualAccount, $amount)
     {
         $this->virtualAccount = $virtualAccount;
-        $this->monthlyFee = MonthlyFee::where('id', 1)->value('amount') ?? 750.00;
+        $this->monthlyFee = $amount;
     }
 
     public function handle(): void
@@ -47,29 +46,16 @@ class DeductMonthlyFee implements ShouldQueue
 
             $virtual_account->decrement('balance', $deduction);
             $virtual_account->decrement('arrears', $deduction);
-
+            
             Transaction::create([
                 'user_id' => $virtual_account->user_id,
                 'virtual_account_id' => $virtual_account->id,
                 'amount' => $deduction,
                 'type' => 'debit',
-                'reference' => 'MONTHLY-FEE-' . now()->format('Ym') . '-' . $virtual_account->id,
-                'narration' => $arears > $deduction
-                    ? 'Partial deduction towards monthly fee'
-                    : 'Monthly fee (full/arrears deduction)',
-                'is_completed' => $arears > $deduction ? 'PARTIALLY' : 'PAID',
+                'reference' => 'MONTHLY-FEE-' . now()->format('Ym') . '-' . $virtual_account->user->account_ref,
+                'narration' => 'Monthly Fee Deduction',
+                'is_completed' => $balance >= $arrears ? 'PAID' : 'PARTIALLY',
             ]);
-
-            Log::info("Monthly fee deducted (partial or full)", [
-                'virtual_account_id' => $virtual_account->id,
-                'deducted' => $deduction,
-                'arrears_remaining' => $virtual_account->arrears
-            ]);
-        } else {
-            Log::warning("No funds available, arrears updated", [
-                'virtual_account_id' => $virtual_account->id,
-                'arrears' => $arrears
-            ]);
-        }
+        } 
     }
 }

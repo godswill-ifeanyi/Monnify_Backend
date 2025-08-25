@@ -25,6 +25,11 @@ class DeductMonthlyFeeCommand extends Command
      */
     public function handle()
     {
-        //
+        $monthlyFee = \App\Models\MonthlyFee::where('id', 1)->value('amount') ?? 750.00;
+        $virtualAccounts = \App\Models\VirtualAccount::all();
+        foreach ($virtualAccounts as $account) {
+            \App\Jobs\DeductMonthlyFee::dispatch($account, $monthlyFee);
+        }
+        $this->info('Monthly fee deduction jobs dispatched successfully.');
     }
 }
