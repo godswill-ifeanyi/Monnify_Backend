@@ -105,7 +105,8 @@ class WebhookController extends Controller
             return $this->error('Event Type Not Supported', 400);
         }
 
-        return $this->success(new TransactionResource($transaction), 'Account Credited N'.$amount, 201);
+        return $this->success(null, 'Webhook Received, Processing...', 201);
+
     }
 
     /* private function extractClientIdFromReference($reference): ?int
