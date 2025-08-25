@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\AdminController;
 use App\Http\Controllers\API\V1\WebhookController;
+use App\Http\Controllers\API\V1\MonthlyFeeController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\VirtualAccountController;
 
@@ -35,5 +36,10 @@ Route::prefix('v1')->group(function() {
 
     // Webhook
     Route::post('/webhook/credit', [WebhookController::class, 'handle']);
+
+    // Monthly Fee
+    Route::get('/monthly-fee', [MonthlyFeeController::class, 'index']);
+    Route::put('/monthly-fee', [MonthlyFeeController::class, 'update']);
+
 
 });
