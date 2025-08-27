@@ -61,7 +61,7 @@ class WebhookController extends Controller
         }  */
 
         // Step 1: Verify Signature
-        $payload = $request->getContent();
+        /* $payload = $request->getContent();
         $signature = $request->header('monnify-signature');
 
         $apiKey = config('monnify.api_key');
@@ -71,7 +71,7 @@ class WebhookController extends Controller
 
         if ($signature !== $computedHash) {
             return $this->error('Signature Invalid', 403);
-        }
+        } */
 
         // Process only successful transactions
         if ($request->eventType === 'SUCCESSFUL_TRANSACTION') {
