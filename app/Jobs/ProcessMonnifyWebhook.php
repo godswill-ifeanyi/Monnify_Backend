@@ -19,22 +19,20 @@ class ProcessMonnifyWebhook implements ShouldQueue
 
     protected $data;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(array $data)
     {
         $this->data = $data;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
-        $data = $this->data;
+        $data = $this->data['eventData'];
 
         try {
+            if (Transaction::where('reference', $data['transactionReference'])->exists()) {
+                return; // Duplicate transaction, ignore
+            }
+            
             // 1. Resolve account reference
             if ($data['product']['type'] === 'RESERVED_ACCOUNT') {
                 $accountReference = $data['product']['reference'];
@@ -59,12 +57,41 @@ class ProcessMonnifyWebhook implements ShouldQueue
             }
 
             $amountPaid = $data['amountPaid'];
-            $arrears    = $virtualAccount->arrears;
-            $deduction  = 0;
 
-            // 3. Deduct arrears first
+            // 3. Always record deposit (CREDIT) first
+            $creditTransaction = Transaction::create([
+                'user_id'           => $user->id,
+                'virtual_account_id'=> $virtualAccount->id,
+                'amount'            => $amountPaid,
+                'type'              => 'credit',
+                'reference'         => $data['transactionReference'],
+                'narration'         => $data['paymentDescription'] ?? 'Deposit',
+                'is_completed'      => $data['paymentStatus'],
+            ]);
+
+            // Deposit details
+            $deposit_detail = new DepositDetail;
+            $deposit_detail->transaction_id = $creditTransaction->id;
+
+            if ($data['paymentMethod'] === 'ACCOUNT_TRANSFER') {
+                $deposit_detail->sender_account_name   = $data['paymentSourceInformation'][0]['accountName'] ?? 'UNKNOWN';
+                $deposit_detail->sender_account_number = $data['paymentSourceInformation'][0]['accountNumber'] ?? 'UNKNOWN';
+                $deposit_detail->sender_bank_code      = $data['paymentSourceInformation'][0]['bankCode'] ?? 'UNKNOWN';
+            } elseif ($data['paymentMethod'] === 'CARD') {
+                $deposit_detail->sender_account_name   = "CARD";
+                $deposit_detail->sender_account_number = "CARD";
+                $deposit_detail->sender_bank_code      = "CARD";
+            }
+
+            $deposit_detail->save();
+
+            // 4. Check and deduct arrears
+            $arrears   = $virtualAccount->arrears;
+            $deduction = 0;
+
             if ($arrears > 0) {
                 $deduction = min($arrears, $amountPaid);
+
                 $virtualAccount->decrement('arrears', $deduction);
 
                 Transaction::create([
@@ -78,39 +105,13 @@ class ProcessMonnifyWebhook implements ShouldQueue
                 ]);
             }
 
-            // 4. Remaining balance goes to credit
+            // 5. Add only the remaining balance after arrears
             $remaining = $amountPaid - $deduction;
             if ($remaining > 0) {
                 $virtualAccount->increment('balance', $remaining);
-
-                $transaction = Transaction::create([
-                    'user_id'           => $user->id,
-                    'virtual_account_id'=> $virtualAccount->id,
-                    'amount'            => $remaining,
-                    'type'              => 'credit',
-                    'reference'         => $data['transactionReference'],
-                    'narration'         => $data['paymentDescription'] ?? '',
-                    'is_completed'      => $data['paymentStatus'],
-                ]);
-
-                // 5. Deposit details
-                $deposit_detail = new DepositDetail;
-                $deposit_detail->transaction_id = $transaction->id;
-
-                if ($data['paymentMethod'] == 'ACCOUNT_TRANSFER') {
-                    $deposit_detail->sender_account_name = $data['paymentSourceInformation'][0]['accountName'] ?? 'UNKNOWN';
-                    $deposit_detail->sender_account_number = $data['paymentSourceInformation'][0]['accountNumber'] ?? 'UNKNOWN';
-                    $deposit_detail->sender_bank_code = $data['paymentSourceInformation'][0]['bankCode'] ?? 'UNKNOWN';
-                } elseif ($data['paymentMethod'] == 'CARD') {
-                    $deposit_detail->sender_account_name   = "CARD";
-                    $deposit_detail->sender_account_number = "CARD";
-                    $deposit_detail->sender_bank_code      = "CARD";
-                }
-
-                $deposit_detail->save();
             }
 
-            Log::info("Webhook processed successfully for accountRef {$accountReference}, amount {$amountPaid}");
+            Log::info("Webhook processed: user={$user->id}, paid={$amountPaid}, arrearsDeducted={$deduction}, remaining={$remaining}");
 
         } catch (\Throwable $e) {
             Log::error("Webhook processing failed: " . $e->getMessage(), [
