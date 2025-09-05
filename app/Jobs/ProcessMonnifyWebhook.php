@@ -5,8 +5,9 @@ namespace App\Jobs;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Models\DepositDetail;
-use App\Models\VirtualAccount;
 use Illuminate\Bus\Queueable;
+use App\Models\DisburseDetail;
+use App\Models\VirtualAccount;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -18,10 +19,18 @@ class ProcessMonnifyWebhook implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $data;
+    protected $mainAcctName;
+    protected $mainAcctNumber;
+    protected $mainBankName;
+    protected $mainBankCode;
 
     public function __construct(array $data)
     {
         $this->data = $data;
+        $this->mainAcctName = config('monnify.main_account_name');
+        $this->mainAcctNumber = config('monnify.main_account_number');
+        $this->mainBankName = config('monnify.main_bank_name');
+        $this->mainBankCode = config('monnify.main_bank_code');
     }
 
     public function handle(): void
@@ -94,7 +103,7 @@ class ProcessMonnifyWebhook implements ShouldQueue
 
                 $virtualAccount->decrement('arrears', $deduction);
 
-                Transaction::create([
+                $transaction = Transaction::create([
                     'user_id'           => $virtualAccount->user_id,
                     'virtual_account_id'=> $virtualAccount->id,
                     'amount'            => $deduction,
@@ -103,6 +112,14 @@ class ProcessMonnifyWebhook implements ShouldQueue
                     'narration'         => 'Monthly Fee Deduction',
                     'is_completed'      => $amountPaid >= $arrears ? 'PAID' : 'PARTIALLY',
                 ]);
+
+                $disburse_detail = new DisburseDetail;
+                $disburse_detail->transaction_id = $transaction->id;
+                $disburse_detail->total_fee = 0.00;
+                $disburse_detail->destination_bank_name = $this->mainBankName ?? 'UNKNOWN';
+                $disburse_detail->destination_account_number = $this->mainAcctNumber ?? 'UNKNOWN';
+                $disburse_detail->destination_bank_code = $this->mainBankName ?? 'UNKNOWN';
+                $disburse_detail->save();
             }
 
             // 5. Add only the remaining balance after arrears

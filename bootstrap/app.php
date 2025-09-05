@@ -23,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             foreach ($virtualAccounts as $account) {
                 \App\Jobs\DeductMonthlyFee::dispatch($account, $monthlyFee);
             }
-        })->everyMinute();
+        })->monthly()->firstDayOfMonth()->at('00:00')->timezone('Africa/Lagos');
         //->monthlyOn(1, '00:00');
         //->everyMinute();
 

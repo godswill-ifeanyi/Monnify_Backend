@@ -24,9 +24,9 @@ class TransactionResource extends JsonResource
                 'narration' => $this->narration,
                 'reference' => $this->reference,
                 'isCompleted' => $this->is_completed,
-                'receiverAccountName' => $this->disburseDetail->destination_account_name,
                 'receiverAccountNumber' => $this->disburseDetail->destination_account_number,
                 'receiverBankName' => $this->disburseDetail->destination_bank_name,
+                'receiverBankCode' => $this->disburseDetail->destination_bank_code,
             ];
         }
         else if ($this->type == 'credit') {
@@ -38,7 +38,7 @@ class TransactionResource extends JsonResource
                 'isCompleted' => $this->is_completed,
                 'senderAccountName' => $this->depositDetail->sender_account_name,
                 'senderAccountNumber' => $this->depositDetail->sender_account_number,
-                'senderBankName' => $this->depositDetail->sender_bank_code,
+                'senderBankCode' => $this->depositDetail->sender_bank_code,
             ];
         }
 
