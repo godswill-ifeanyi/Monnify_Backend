@@ -32,7 +32,7 @@ class ProcessMonnifyWebhook implements ShouldQueue
             if (Transaction::where('reference', $data['transactionReference'])->exists()) {
                 return; // Duplicate transaction, ignore
             }
-            
+
             // 1. Resolve account reference
             if ($data['product']['type'] === 'RESERVED_ACCOUNT') {
                 $accountReference = $data['product']['reference'];
