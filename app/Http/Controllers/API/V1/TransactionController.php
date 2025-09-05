@@ -77,7 +77,7 @@ class TransactionController extends Controller
         } */
 
         // Update Transaction Status
-        foreach($transactions as $transaction) {
+        /* foreach($transactions as $transaction) {
             if ($transaction->type == 'credit') {
                 $monnify = new MonnifyService();
                 $transaction_status = $monnify->getTransactionStatus($transaction->reference);
@@ -108,7 +108,7 @@ class TransactionController extends Controller
                     }
                 }
             }
-        }
+        } */
 
         return $this->success(TransactionResource::collection($transactions), 'Transaction(s) Fetched Successfully', 200);
     }
@@ -155,7 +155,7 @@ class TransactionController extends Controller
         $monnify = new MonnifyService();
 
         // Update Transaction Status
-        $transaction_status = $monnify->getTransactionStatus($transaction->reference);
+        /* $transaction_status = $monnify->getTransactionStatus($transaction->reference);
 
         if ($transaction_status == null) {
             return $this->error('Something Went Wrong', 500);
@@ -166,7 +166,7 @@ class TransactionController extends Controller
                 $transaction->is_completed = $transaction_status['paymentStatus'];
                 $transaction->save();
             }
-        }
+        } */
 
         return $this->success(new TransactionResource($transaction), 'Transaction Fetched Successfully', 200);
     }
@@ -236,9 +236,8 @@ class TransactionController extends Controller
             return $this->error('User Transaction Not Found', 404);
         }
 
-        $monnify = new MonnifyService();
-
         // Update Transaction Status
+        /* $monnify = new MonnifyService();
         foreach($transactions as $transaction) {
             if ($transaction->type == 'credit') {
                 $monnify = new MonnifyService();
@@ -270,7 +269,7 @@ class TransactionController extends Controller
                     }
                 }
             }
-        }
+        } */
 
         return $this->success(TransactionResource::collection($transactions), 'Transaction(s) Fetched Successfully', 200);
     }
