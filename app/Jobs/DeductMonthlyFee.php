@@ -22,6 +22,8 @@ class DeductMonthlyFee implements ShouldQueue
     protected $monthlyFee;
     protected $mainAcctName;
     protected $mainAcctNumber;
+    protected $mainBankName;
+    protected $mainBankCode;
 
     public function __construct(VirtualAccount $virtualAccount, $amount)
     {
@@ -29,6 +31,8 @@ class DeductMonthlyFee implements ShouldQueue
         $this->monthlyFee = $amount;
         $this->mainAcctName = config('monnify.main_account_name');
         $this->mainAcctNumber = config('monnify.main_account_number');
+        $this->mainBankName = config('monnify.main_bank_name');
+        $this->mainBankCode = config('monnify.main_bank_code');
     }
 
     public function handle(): void
@@ -65,9 +69,9 @@ class DeductMonthlyFee implements ShouldQueue
             $disburse_detail = new DisburseDetail;
             $disburse_detail->transaction_id = $transaction->id;
             $disburse_detail->total_fee = 0.00;
-            $disburse_detail->destination_bank_name = $this->mainAcctName;
+            $disburse_detail->destination_bank_name = $this->mainBankName;
             $disburse_detail->destination_account_number = $this->mainAcctNumber;
-            $disburse_detail->destination_bank_code = 'UNKNOWN';
+            $disburse_detail->destination_bank_code = $this->mainBankName;
             $disburse_detail->save();
         }
     }
