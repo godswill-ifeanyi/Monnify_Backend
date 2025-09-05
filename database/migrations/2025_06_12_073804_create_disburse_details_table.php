@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('disburse_details', function (Blueprint $table) {
             $table->id(); $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade');
-            $table->decimal("total_fee", 10, 2);
+            $table->decimal("total_fee", 10, 2)->default(0.00);
             $table->string('destination_bank_name');
             $table->string('destination_account_number');
             $table->string('destination_bank_code');
