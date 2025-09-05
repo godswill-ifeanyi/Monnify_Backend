@@ -23,7 +23,8 @@ return Application::configure(basePath: dirname(__DIR__))
             foreach ($virtualAccounts as $account) {
                 \App\Jobs\DeductMonthlyFee::dispatch($account, $monthlyFee);
             }
-        })->monthlyOn(1, '00:00');
+        })->everyMinute();
+        //->monthlyOn(1, '00:00');
         //->everyMinute();
 
         /* $schedule->command('app:deduct-monthly-fee-command')->everyFiveMinutes() */
