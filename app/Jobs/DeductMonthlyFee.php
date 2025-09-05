@@ -69,9 +69,9 @@ class DeductMonthlyFee implements ShouldQueue
             $disburse_detail = new DisburseDetail;
             $disburse_detail->transaction_id = $transaction->id;
             $disburse_detail->total_fee = 0.00;
-            $disburse_detail->destination_bank_name = $this->mainBankName;
-            $disburse_detail->destination_account_number = $this->mainAcctNumber;
-            $disburse_detail->destination_bank_code = $this->mainBankName;
+            $disburse_detail->destination_bank_name = $this->mainBankName ?? 'UNKNOWN';
+            $disburse_detail->destination_account_number = $this->mainAcctNumber ?? 'UNKNOWN';
+            $disburse_detail->destination_bank_code = $this->mainBankName ?? 'UNKNOWN';
             $disburse_detail->save();
         }
     }
