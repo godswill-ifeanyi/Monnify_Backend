@@ -90,6 +90,10 @@ class ProcessMonnifyWebhook implements ShouldQueue
                 $deposit_detail->sender_account_name   = "CARD";
                 $deposit_detail->sender_account_number = "CARD";
                 $deposit_detail->sender_bank_code      = "CARD";
+            } else {
+                $deposit_detail->sender_account_name   = "UNKNOWN";
+                $deposit_detail->sender_account_number = "UNKNOWN";
+                $deposit_detail->sender_bank_code      = "UNKNOWN";
             }
 
             $deposit_detail->save();
@@ -103,22 +107,22 @@ class ProcessMonnifyWebhook implements ShouldQueue
 
                 $virtualAccount->decrement('arrears', $deduction);
 
-                $transaction = Transaction::create([
+                $debitTransaction = Transaction::create([
                     'user_id'           => $virtualAccount->user_id,
                     'virtual_account_id'=> $virtualAccount->id,
                     'amount'            => $deduction,
                     'type'              => 'debit',
-                    'reference'         => 'MONTHLY-FEE-' . now()->format('Ym') . '-' . $virtualAccount->user->account_ref,
+                    'reference'         => 'MONTHLY-FEE-' . now()->format('YmdHis') . '-' . $virtualAccount->user->account_ref,
                     'narration'         => 'Monthly Fee Deduction',
                     'is_completed'      => $amountPaid >= $arrears ? 'PAID' : 'PARTIALLY',
                 ]);
 
                 $disburse_detail = new DisburseDetail;
-                $disburse_detail->transaction_id = $transaction->id;
+                $disburse_detail->transaction_id = $debitTransaction->id;
                 $disburse_detail->total_fee = 0.00;
                 $disburse_detail->destination_bank_name = $this->mainBankName ?? 'UNKNOWN';
                 $disburse_detail->destination_account_number = $this->mainAcctNumber ?? 'UNKNOWN';
-                $disburse_detail->destination_bank_code = $this->mainBankName ?? 'UNKNOWN';
+                $disburse_detail->destination_bank_code = $this->mainBankCode ?? 'UNKNOWN';
                 $disburse_detail->save();
             }
 
