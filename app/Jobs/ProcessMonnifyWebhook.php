@@ -8,6 +8,7 @@ use App\Models\DepositDetail;
 use Illuminate\Bus\Queueable;
 use App\Models\DisburseDetail;
 use App\Models\VirtualAccount;
+use App\Events\TransactionCreated;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -97,6 +98,8 @@ class ProcessMonnifyWebhook implements ShouldQueue
             }
 
             $deposit_detail->save();
+
+            event(new TransactionCreated($creditTransaction));
 
             // 4. Check and deduct arrears
             $arrears   = $virtualAccount->arrears;
