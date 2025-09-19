@@ -57,7 +57,7 @@ class WebhookController extends Controller
 
         if (!in_array($ip, $allowedIPs)) {
             return $this->error('Unauthorized IP', 403);
-        } 
+        }
         // Step 1: Verify Signature
         $payload = $request->getContent();
         $signature = $request->header('monnify-signature');
@@ -139,3 +139,17 @@ class WebhookController extends Controller
     } */
 
 }
+
+/*
+'pusher' => [
+    'driver' => 'pusher',
+    'key' => env('PUSHER_APP_KEY'),
+    'secret' => env('PUSHER_APP_SECRET'),
+    'app_id' => env('PUSHER_APP_ID'),
+    'options' => [
+        'cluster' => env('PUSHER_APP_CLUSTER'),
+        'useTLS' => true,
+    ],
+],
+
+*/

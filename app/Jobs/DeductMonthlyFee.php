@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use Illuminate\Bus\Queueable;
 use App\Models\DisburseDetail;
 use App\Models\VirtualAccount;
+use App\Events\TransactionCreated;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -73,6 +74,8 @@ class DeductMonthlyFee implements ShouldQueue
             $disburse_detail->destination_account_number = $this->mainAcctNumber ?? 'UNKNOWN';
             $disburse_detail->destination_bank_code = $this->mainBankName ?? 'UNKNOWN';
             $disburse_detail->save();
+
+            event(new TransactionCreated($transaction));
         }
     }
 }

@@ -25,7 +25,8 @@ class TransactionCreated implements ShouldBroadcastNow
     public function broadcastOn(): Channel
     {
         // Each user listens to their private channel
-        return new PrivateChannel('transactions.' . $this->transaction->user()->account_ref);
+        //return new PrivateChannel('transactions.' . $this->transaction->user()->account_ref);
+        return new Channel('transactions');
     }
 
     public function broadcastAs(): string

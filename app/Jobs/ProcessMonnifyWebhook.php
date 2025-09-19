@@ -99,7 +99,7 @@ class ProcessMonnifyWebhook implements ShouldQueue
 
             $deposit_detail->save();
 
-            event(new TransactionCreated($creditTransaction));
+            //event(new TransactionCreated($creditTransaction));
 
             // 4. Check and deduct arrears
             $arrears   = $virtualAccount->arrears;
