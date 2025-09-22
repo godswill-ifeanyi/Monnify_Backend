@@ -75,7 +75,7 @@ class DeductMonthlyFee implements ShouldQueue
             $disburse_detail->destination_bank_code = $this->mainBankCode ?? 'UNKNOWN';
             $disburse_detail->save();
 
-            event(new TransactionCreated($transaction));
+            broadcast(new TransactionCreated($transaction));
         }
     }
 }
