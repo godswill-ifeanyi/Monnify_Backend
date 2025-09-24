@@ -26,12 +26,27 @@ class TransactionCreated implements ShouldBroadcastNow
     public function broadcastOn(): Channel
     {
         // Each user listens to their private channel
-        //return new PrivateChannel('transactions.' . $this->transaction->user()->account_ref);
+        // return new PrivateChannel('transactions.' . $this->transaction->user->account_ref);
         return new Channel('transactions');
     }
 
     public function broadcastAs(): string
     {
         return 'TransactionCreated';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'transaction' => [
+                'accountRef' => $this->transaction->user->account_ref,
+                'type' => $this->transaction->type,
+                'amount' => $this->transaction->amount,
+                'narration' => $this->transaction->narration,
+                'reference' => $this->transaction->reference,
+                'isCompleted' => $this->transaction->is_completed,
+                'createdAt' => $this->transaction->created_at,
+            ]
+        ];
     }
 }

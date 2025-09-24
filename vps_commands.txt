@@ -1,6 +1,6 @@
 sudo apt update && apt upgrade
 
-apt install apache2 
+apt install apache2
 
 sudo apt install mysql-server
 
@@ -59,7 +59,7 @@ sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-availab
 	Options Indexes FollowSymLinks MultiViews
 	AllowOverride All
 	Require all granted
-</Directory> 
+</Directory>
 
 sudo a2ensite clientsaccount.online.conf
 sudo systemctl reload apache2
@@ -75,3 +75,10 @@ sudo systemctl restart apache2
 sudo apt install npm
 npm install
 npm run build
+
+// Open Cron Jobs
+crontab -e
+
+// Laravel logs on Ubuntu
+tail -f storage/logs/laravel.log
+

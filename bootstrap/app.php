@@ -24,10 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 \App\Jobs\DeductMonthlyFee::dispatch($account, $monthlyFee);
             }
         })->monthlyOn(1, '00:00');
-        //->everyMinute();
         //->everyFiveMinutes();
         //timezone('Africa/Lagos');
-        //
+        //->everyMinute();
 
         /* $schedule->command('app:deduct-monthly-fee-command')->everyFiveMinutes() */
     })
