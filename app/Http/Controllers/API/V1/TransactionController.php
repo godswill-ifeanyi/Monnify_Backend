@@ -443,4 +443,15 @@ class TransactionController extends Controller
 
         return $this->success($transaction, 'Successful, Credit Transaction Received', 200);
     }
+
+    public function latest_debit()
+    {
+        $transaction = Cache::get('latest_debit_transaction');
+
+        if (!$transaction) {
+            return $this->error('No Recent Debit Transaction Found', 404);
+        }
+
+        return $this->success($transaction, 'Successful, Debit Transaction Received', 200);
+    }
 }

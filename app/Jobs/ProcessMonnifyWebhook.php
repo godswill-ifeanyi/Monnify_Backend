@@ -131,6 +131,10 @@ class ProcessMonnifyWebhook implements ShouldQueue
                 $disburse_detail->destination_account_number = $this->mainAcctNumber ?? 'UNKNOWN';
                 $disburse_detail->destination_bank_code = $this->mainBankCode ?? 'UNKNOWN';
                 $disburse_detail->save();
+
+                Cache::put('latest_debit_transaction', new TransactionResource($creditTransaction), now()->addHour());
+
+                broadcast(new TransactionCreated($creditTransaction));
             }
 
             // 5. Add only the remaining balance after arrears
