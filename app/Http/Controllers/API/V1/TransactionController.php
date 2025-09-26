@@ -9,6 +9,7 @@ use App\Services\MonnifyService;
 use App\Traits\ApiResponseTrait;
 use App\Http\Requests\PayRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\WithdrawalRequest;
 use App\Http\Resources\TransactionResource;
 
@@ -427,5 +428,19 @@ class TransactionController extends Controller
         $deposit = $monnify->depositToClient($user, $data['amount'], $data['description'] ?? null);
 
         return $this->success(['checkoutURL' => $deposit['responseBody']['checkoutUrl']], 'Successful, Proceed To Checkout', 200);
+    }
+
+    /**
+     * Fetch the last processed credit transaction.
+     */
+    public function latest_credit()
+    {
+        $transaction = Cache::get('latest_credit_transaction');
+
+        if (!$transaction) {
+            return $this->error('No Recent Credit Transaction Found', 404);
+        }
+
+        return $this->success($transaction, 'Successful, Credit Transaction Received', 200);
     }
 }

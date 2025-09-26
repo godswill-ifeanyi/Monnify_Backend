@@ -10,8 +10,10 @@ use App\Models\DisburseDetail;
 use App\Models\VirtualAccount;
 use App\Events\TransactionCreated;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Http\Resources\TransactionResource;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
@@ -98,6 +100,8 @@ class ProcessMonnifyWebhook implements ShouldQueue
             }
 
             $deposit_detail->save();
+
+            Cache::put('latest_credit_transaction', new TransactionResource($creditTransaction), now()->addHour());
 
             broadcast(new TransactionCreated($creditTransaction));
 

@@ -28,6 +28,7 @@ Route::prefix('v1')->group(function() {
     Route::get('/transaction/{reference}', [TransactionController::class, 'show_one']);
     Route::get('/transactions/user/{account_ref}', [TransactionController::class, 'show_all_by_user']);
     Route::get('/transaction/status/{reference}', [TransactionController::class, 'get_status']);
+    Route::get('/transactions/latest-credit', [TransactionController::class, 'latest_credit']);
 
     // Send and Receive Funds
     Route::post('/disburse-funds', [TransactionController::class, 'disburse']);
