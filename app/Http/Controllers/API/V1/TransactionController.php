@@ -204,6 +204,7 @@ class TransactionController extends Controller
             }
 
             $amountPaid = $transaction['responseBody']['amountPaid'];
+            $settlementAmount = $transaction['responseBody']['settlementAmount'];
 
             // 3. Always record deposit (CREDIT) first
             $creditTransaction = Transaction::create([
@@ -263,7 +264,7 @@ class TransactionController extends Controller
             }
 
             // 5. Add only the remaining balance after arrears
-            $remaining = $amountPaid - $deduction;
+            $remaining = $settlementAmount - $deduction;
             if ($remaining > 0) {
                 $virtualAccount->increment('balance', $remaining);
             }
@@ -272,7 +273,8 @@ class TransactionController extends Controller
         //return $this->success($transaction, 'Transaction Fetched Successfully', 200);
         return response()->json([
             "user" => new UserResource($user),
-            "transactionAmount" => $amountPaid,
+            "amountPaid" => $amountPaid,
+            "settleAmount"
         ]);
     }
 
