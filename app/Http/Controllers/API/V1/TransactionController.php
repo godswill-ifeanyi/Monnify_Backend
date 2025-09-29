@@ -183,7 +183,7 @@ class TransactionController extends Controller
         }
 
         if ($transaction['requestSuccessful'] != true) {
-            return $this->error('Transaction Not Found', 400);
+            return $this->error($transaction, 400);
         }
 
         return $this->success(new TransactionResource($transaction), 'Transaction Fetched Successfully', 200);
