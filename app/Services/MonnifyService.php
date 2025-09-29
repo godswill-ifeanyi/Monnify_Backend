@@ -188,14 +188,14 @@ class MonnifyService
         return $result ?? null;
     }
 
-    public function getTransactionStatus()
+    public function getTransactionStatus($reference)
     {
         $accessToken = $this->authenticate();
         if (!$accessToken) return null;
 
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL, "$this->baseUrl/api/v1/transactions/search?");
+        curl_setopt($curl, CURLOPT_URL, "$this->baseUrl/api/v2/merchant/transactions/query?paymentReference=$reference");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER,[
             "Authorization: Bearer $accessToken",

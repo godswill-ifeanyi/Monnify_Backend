@@ -172,21 +172,21 @@ class TransactionController extends Controller
         return $this->success(new TransactionResource($transaction), 'Transaction Fetched Successfully', 200);
     }
 
-    public function get_one() {
+    public function get_one($reference) {
         $monnify = new MonnifyService();
 
         // Update Transaction Status
-        $transaction = $monnify->getTransactionStatus();
+        $transaction = $monnify->getTransactionStatus($reference);
 
         if ($transaction == null) {
             return $this->error('Something Went Wrong', 500);
         }
 
         if ($transaction['requestSuccessful'] != true) {
-            return $this->error($transaction, 400);
+            return $this->error("Transaction Not Found", 400);
         }
 
-        return $this->success(new TransactionResource($transaction), 'Transaction Fetched Successfully', 200);
+        return $this->success($transaction, 'Transaction Fetched Successfully', 200);
     }
 
     /**
