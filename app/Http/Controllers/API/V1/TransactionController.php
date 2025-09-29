@@ -153,7 +153,7 @@ class TransactionController extends Controller
             return $this->error('Transaction Not Found', 404);
         }
 
-        $monnify = new MonnifyService();
+        // $monnify = new MonnifyService();
 
         // Update Transaction Status
         /* $transaction_status = $monnify->getTransactionStatus($transaction->reference);
@@ -168,6 +168,23 @@ class TransactionController extends Controller
                 $transaction->save();
             }
         } */
+
+        return $this->success(new TransactionResource($transaction), 'Transaction Fetched Successfully', 200);
+    }
+
+    public function get_one($reference) {
+        $monnify = new MonnifyService();
+
+        // Update Transaction Status
+        $transaction = $monnify->getTransactionStatus($reference);
+
+        if ($transaction == null) {
+            return $this->error('Something Went Wrong', 500);
+        }
+
+        if ($transaction['requestSuccessful'] != true) {
+            return $this->error('Transaction Not Found', 400);
+        }
 
         return $this->success(new TransactionResource($transaction), 'Transaction Fetched Successfully', 200);
     }
