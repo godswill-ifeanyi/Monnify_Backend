@@ -308,6 +308,7 @@ class MonnifyService
             "paymentDescription" => $description ?? "Card Deposit",
             "currencyCode" => "NGN",
             'contractCode' => $this->contractCode,
+            "redirectUrl" => "http://clientsaccount.online",
             "paymentMethods" => ["CARD","ACCOUNT_TRANSFER"],
         ];
 
