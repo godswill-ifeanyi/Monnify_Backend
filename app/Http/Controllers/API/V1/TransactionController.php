@@ -12,6 +12,7 @@ use App\Services\MonnifyService;
 use App\Traits\ApiResponseTrait;
 use App\Http\Requests\PayRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\WithdrawalRequest;
 use App\Http\Resources\TransactionResource;
