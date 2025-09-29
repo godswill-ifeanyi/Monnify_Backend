@@ -172,11 +172,11 @@ class TransactionController extends Controller
         return $this->success(new TransactionResource($transaction), 'Transaction Fetched Successfully', 200);
     }
 
-    public function get_one($reference) {
+    public function get_one() {
         $monnify = new MonnifyService();
 
         // Update Transaction Status
-        $transaction = $monnify->getTransactionStatus($reference);
+        $transaction = $monnify->getTransactionStatus();
 
         if ($transaction == null) {
             return $this->error('Something Went Wrong', 500);
