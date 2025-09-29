@@ -219,11 +219,7 @@ class TransactionController extends Controller
             $deposit_detail = new DepositDetail;
             $deposit_detail->transaction_id = $creditTransaction->id;
 
-            if ($transaction['responseBody']['paymentMethod'] === 'ACCOUNT_TRANSFER') {
-                $deposit_detail->sender_account_name   = $transaction['responseBody']['paymentSourceInformation'][0]['accountName'] ?? 'UNKNOWN';
-                $deposit_detail->sender_account_number = $transaction['responseBody']['paymentSourceInformation'][0]['accountNumber'] ?? 'UNKNOWN';
-                $deposit_detail->sender_bank_code      = $transaction['responseBody']['paymentSourceInformation'][0]['bankCode'] ?? 'UNKNOWN';
-            } elseif ($transaction['paymentMethod'] === 'CARD') {
+            if ($transaction['responseBody']['paymentMethod'] === 'CARD') {
                 $deposit_detail->sender_account_name   = "CARD";
                 $deposit_detail->sender_account_number = "CARD";
                 $deposit_detail->sender_bank_code      = "CARD";
