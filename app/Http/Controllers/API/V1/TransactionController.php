@@ -9,7 +9,6 @@ use App\Services\MonnifyService;
 use App\Traits\ApiResponseTrait;
 use App\Http\Requests\PayRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\WithdrawalRequest;
 use App\Http\Resources\TransactionResource;
@@ -184,22 +183,20 @@ class TransactionController extends Controller
         }
 
         if ($transaction['requestSuccessful'] != true) {
-            return $this->error("Transaction Not Found", 400);
+            return $this->error('Transaction Not Found', 400);
         }
 
-        $accountReference = substr($transaction['requestBody']['paymentReference'], 0, 19);
+        $accountReference = substr($transaction['responseBody']['paymentReference'], 0, 19);
 
         // 2. Find user & virtual account
             $user = User::where('account_ref', $accountReference)->first();
             if (!$user) {
-                Log::warning("Webhook received for unknown accountRef: " . $accountReference);
-                return;
+                return $this->error('User Not Found', 400);;
             }
 
             $virtualAccount = VirtualAccount::where('user_id', $user->id)->first();
             if (!$virtualAccount) {
-                Log::error("User {$user->id} has no virtual account");
-                return;
+                return $this->error('Reserved Acount Not Found', 400);;
             }
 
             $amountPaid = $transaction['responseBody']['amountPaid'];
@@ -271,7 +268,6 @@ class TransactionController extends Controller
                 $virtualAccount->increment('balance', $remaining);
             }
 
-            Log::info("Webhook processed: user={$user->id}, paid={$amountPaid}, arrearsDeducted={$deduction}, remaining={$remaining}");
 
         //return $this->success($transaction, 'Transaction Fetched Successfully', 200);
         return response()->json([
