@@ -274,7 +274,7 @@ class TransactionController extends Controller
         return response()->json([
             "user" => new UserResource($user),
             "amountPaid" => $amountPaid,
-            "settleAmount" => $transaction["responseBody"]["settleAmount"]
+            "settlementAmount" => $transaction["responseBody"]["settlementAmount"]
         ]);
     }
 
