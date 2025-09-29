@@ -9,6 +9,7 @@ use App\Services\MonnifyService;
 use App\Traits\ApiResponseTrait;
 use App\Http\Requests\PayRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\WithdrawalRequest;
 use App\Http\Resources\TransactionResource;
@@ -186,7 +187,97 @@ class TransactionController extends Controller
             return $this->error("Transaction Not Found", 400);
         }
 
-        return $this->success($transaction, 'Transaction Fetched Successfully', 200);
+        $accountReference = substr($transaction['requestBody']['paymentReference'], 0, 19);
+
+        // 2. Find user & virtual account
+            $user = User::where('account_ref', $accountReference)->first();
+            if (!$user) {
+                Log::warning("Webhook received for unknown accountRef: " . $accountReference);
+                return;
+            }
+
+            $virtualAccount = VirtualAccount::where('user_id', $user->id)->first();
+            if (!$virtualAccount) {
+                Log::error("User {$user->id} has no virtual account");
+                return;
+            }
+
+            $amountPaid = $transaction['responseBody']['amountPaid'];
+
+            // 3. Always record deposit (CREDIT) first
+            $creditTransaction = Transaction::create([
+                'user_id'           => $user->id,
+                'virtual_account_id'=> $virtualAccount->id,
+                'amount'            => $amountPaid,
+                'type'              => 'credit',
+                'reference'         => $transaction['responseBody']['transactionReference'],
+                'narration'         => $transaction['responseBody']['paymentDescription'] ?? 'Deposit',
+                'is_completed'      => $transaction['responseBody']['paymentStatus'],
+            ]);
+
+            // Deposit details
+            $deposit_detail = new DepositDetail;
+            $deposit_detail->transaction_id = $creditTransaction->id;
+
+            if ($transaction['responseBody']['paymentMethod'] === 'ACCOUNT_TRANSFER') {
+                $deposit_detail->sender_account_name   = $transaction['responseBody']['paymentSourceInformation'][0]['accountName'] ?? 'UNKNOWN';
+                $deposit_detail->sender_account_number = $transaction['responseBody']['paymentSourceInformation'][0]['accountNumber'] ?? 'UNKNOWN';
+                $deposit_detail->sender_bank_code      = $transaction['responseBody']['paymentSourceInformation'][0]['bankCode'] ?? 'UNKNOWN';
+            } elseif ($transaction['paymentMethod'] === 'CARD') {
+                $deposit_detail->sender_account_name   = "CARD";
+                $deposit_detail->sender_account_number = "CARD";
+                $deposit_detail->sender_bank_code      = "CARD";
+            } else {
+                $deposit_detail->sender_account_name   = "UNKNOWN";
+                $deposit_detail->sender_account_number = "UNKNOWN";
+                $deposit_detail->sender_bank_code      = "UNKNOWN";
+            }
+
+            $deposit_detail->save();
+
+            // 4. Check and deduct arrears
+            $arrears   = $virtualAccount->arrears;
+            $deduction = 0;
+
+            if ($arrears > 0) {
+                $deduction = min($arrears, $amountPaid);
+
+                $virtualAccount->decrement('arrears', $deduction);
+
+                $debitTransaction = Transaction::create([
+                    'user_id'           => $virtualAccount->user_id,
+                    'virtual_account_id'=> $virtualAccount->id,
+                    'amount'            => $deduction,
+                    'type'              => 'debit',
+                    'reference'         => 'MONTHLY-FEE-' . now()->format('YmdHis') . '-' . $virtualAccount->user->account_ref,
+                    'narration'         => 'Monthly Fee Deduction',
+                    'is_completed'      => $amountPaid >= $arrears ? 'PAID' : 'PARTIALLY',
+                ]);
+
+                $disburse_detail = new DisburseDetail;
+                $disburse_detail->transaction_id = $debitTransaction->id;
+                $disburse_detail->total_fee = 0.00;
+                $disburse_detail->destination_bank_name = $this->mainBankName ?? 'UNKNOWN';
+                $disburse_detail->destination_account_number = $this->mainAcctNumber ?? 'UNKNOWN';
+                $disburse_detail->destination_bank_code = $this->mainBankCode ?? 'UNKNOWN';
+                $disburse_detail->save();
+
+
+            }
+
+            // 5. Add only the remaining balance after arrears
+            $remaining = $amountPaid - $deduction;
+            if ($remaining > 0) {
+                $virtualAccount->increment('balance', $remaining);
+            }
+
+            Log::info("Webhook processed: user={$user->id}, paid={$amountPaid}, arrearsDeducted={$deduction}, remaining={$remaining}");
+
+        //return $this->success($transaction, 'Transaction Fetched Successfully', 200);
+        return response()->json([
+            "user" => new UserResource($user),
+            "transactionAmount" => $amountPaid,
+        ]);
     }
 
     /**
