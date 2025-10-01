@@ -273,7 +273,8 @@ class TransactionController extends Controller
         return $this->success([
                 "user" => new UserResource($user),
                 "paymentData" => [
-                    "date" => $transaction["responseBody"],
+                    //"date" => $transaction["responseBody"],
+                    "date" => $transaction["responseBody"]["paidOn"],
                     "amountPaid" => $amountPaid,
                     "method" => "card payment"
                 ]
