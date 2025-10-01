@@ -270,12 +270,20 @@ class TransactionController extends Controller
             }
 
 
-        //return $this->success($transaction, 'Transaction Fetched Successfully', 200);
-        return response()->json([
+        return $this->success([
+                "user" => new UserResource($user),
+                "paymentData" => [
+                    "date" => $transaction["responseBody"],
+                    "amountPaid" => $amountPaid,
+                    "method" => "card payment"
+                ]
+            ], 
+            'Transaction Fetched Successfully', 200);
+        /* return response()->json([
             "user" => new UserResource($user),
             "amountPaid" => $amountPaid,
             "settlementAmount" => $transaction["responseBody"]["settlementAmount"]
-        ]);
+        ]); */
     }
 
     /**
