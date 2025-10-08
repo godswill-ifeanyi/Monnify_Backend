@@ -278,13 +278,8 @@ class TransactionController extends Controller
                     "amountPaid" => $amountPaid,
                     "method" => "card payment"
                 ]
-            ], 
+            ],
             'Transaction Fetched Successfully', 200);
-        /* return response()->json([
-            "user" => new UserResource($user),
-            "amountPaid" => $amountPaid,
-            "settlementAmount" => $transaction["responseBody"]["settlementAmount"]
-        ]); */
     }
 
     /**
@@ -473,8 +468,18 @@ class TransactionController extends Controller
         }
 
         if ($disburse['requestSuccessful'] == true) {
+            $virtualAccount = VirtualAccount::where('user_id', $user->id)->first();
+            if (!$virtualAccount) {
+                return $this->error('Reserved Acount Not Found', 400);;
+            }
 
-            return $this->success($disburse['responseBody'], 'Funds Successfully Disbursed', 201);
+            $virtualAccount->decrement('balance', $request->amount + $disburse['responseBody']['totalFee']);
+
+            return $this->success([
+                "user" => new UserResource($user),
+                "disburseData" => $disburse['responseBody']
+            ],
+            'Funds Disbursed Successfully', 201);
         }
         else {
             return $this->error(ucwords($disburse['responseMessage']),  500);

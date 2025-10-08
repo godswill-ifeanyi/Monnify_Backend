@@ -63,6 +63,7 @@ class ProcessMonnifyWebhook implements ShouldQueue
                 }
 
                 $amountPaid = $data['amountPaid'];
+                $settlementAmount = $data['settlementAmount'];
 
                 // 3. Always record deposit (CREDIT) first
                 $creditTransaction = Transaction::create([
@@ -104,7 +105,7 @@ class ProcessMonnifyWebhook implements ShouldQueue
                 $deduction = 0;
 
                 if ($arrears > 0) {
-                    $deduction = min($arrears, $amountPaid);
+                    $deduction = min($arrears, $settlementAmount);
 
                     $virtualAccount->decrement('arrears', $deduction);
 
@@ -132,7 +133,7 @@ class ProcessMonnifyWebhook implements ShouldQueue
                 }
 
                 // 5. Add only the remaining balance after arrears
-                $remaining = $amountPaid - $deduction;
+                $remaining = $settlementAmount - $deduction;
                 if ($remaining > 0) {
                     $virtualAccount->increment('balance', $remaining);
                 }
@@ -141,7 +142,7 @@ class ProcessMonnifyWebhook implements ShouldQueue
 
             } elseif ($data['product']['type'] === 'WEB_SDK') {
                 $accountReference = substr($data['product']['reference'], 0, 19);
-                
+
             } else {
                 Log::warning("Unknown product type: " . $data['product']['type']);
                 return;
